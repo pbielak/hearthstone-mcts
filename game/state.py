@@ -1,5 +1,4 @@
 """Hearthstone game state"""
-from game.player import Player
 from game.cards.deck import CardDeck
 
 
@@ -9,10 +8,10 @@ class GameState(object):
     Player B <--- CardDeck B
     """
     def __init__(self, cfg):
-        self.player_A = Player('Pyjter', cfg)
+        self.player_A = cfg.player_A_cls('Pyjter', cfg)
         self.card_deck_A = CardDeck(self.player_A.name, cfg)
 
-        self.player_B = Player('Mati', cfg)
+        self.player_B = cfg.player_B_cls('Mati', cfg)
         self.card_deck_B = CardDeck(self.player_B.name, cfg)
 
     def is_terminal_state(self):

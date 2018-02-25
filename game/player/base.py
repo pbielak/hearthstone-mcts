@@ -1,7 +1,7 @@
 """Player module"""
 
 
-class Player(object):
+class BasePlayer(object):
     """
     Health
     Mana points
@@ -16,6 +16,12 @@ class Player(object):
         self.cards = []
         self.minions = []
         self.cfg = cfg
+
+    def get_turn(self, game_state):
+        """This method should be implemented in classes, which inherit
+        from this one. Here the actual actions should be chosen and
+        packed into a Turn object."""
+        pass
 
     def __repr__(self):
         fmt_str = "Player: {name}; Health: {current_health}/{max_health}; " \

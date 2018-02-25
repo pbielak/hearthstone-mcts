@@ -13,7 +13,19 @@ class GameEngine(object):
 
     def run(self):
         while not self.game_state.is_terminal_state():
-            pass
-            # update game state (increment step_no, set current_player)
-            # choose player + get turn from player
-            # apply turn on game_state
+            self.on_round_begin()
+            player = self.choose_player()
+            turn = self.get_player_turn(player)
+            self.game_state = self.apply_turn(turn)
+
+    def on_round_begin(self):
+        pass
+
+    def choose_player(self):
+        pass
+
+    def get_player_turn(self, player):
+        pass
+
+    def apply_turn(self, turn):
+        pass

@@ -9,8 +9,10 @@ Config = namedtuple('Config', [
     'INITIAL_HEALTH',
 ])
 
-cfg = Config(
-    INITIAL_HEALTH=20,
-    INITIAL_MANA=1
-)
 
+def load_cfg():
+    cfg = Config(
+        INITIAL_HEALTH=20,
+        INITIAL_MANA=1
+    )
+    return cfg

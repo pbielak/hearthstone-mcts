@@ -69,7 +69,11 @@ class MinionCard(Card):
         self.side_effect = side_effect
 
     def apply(self, game_state, source, target):
-        game_state_cpy = deepcopy(game_state)
+        # Call side-effect
+        if self.side_effect is not None:
+            game_state_cpy = self.side_effect(game_state, source, target)
+        else:
+            game_state_cpy = deepcopy(game_state)
 
         # Perform attack
         if target is game_state.player_A:
@@ -85,10 +89,6 @@ class MinionCard(Card):
                     game_state_cpy.player_B.minions[idx].health -= self.attack
         else:
             raise ValueError('Target not defined or not recognized!')
-
-        # Call side-effect
-        if self.side_effect is not None:
-            game_state_cpy = self.side_effect(game_state_cpy, source, target)
 
         return game_state_cpy
 

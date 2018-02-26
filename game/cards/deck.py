@@ -13,3 +13,6 @@ class CardDeck(object):
         self.name = name
         self.cards = []
         # cfg should be used to generate initial list of cards in deck(!)
+
+    def is_empty(self):
+        return not self.cards

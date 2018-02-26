@@ -15,10 +15,11 @@ class GameEngine(object):
 
     def run(self):
         while not self.game_state.is_terminal_state():
+            print('STEP:', self.step_no, 'STATE:\n', self.game_state)
             self.on_round_begin()
             player = self.choose_player()
-            turn = player.get_turn()
-            self.game_state = self.apply_turn(turn)
+            turn = player.get_turn(self.game_state)
+            self.game_state = self.apply_turn(self.game_state, turn)
 
     def on_round_begin(self):
         self.step_no += 1
@@ -28,5 +29,6 @@ class GameEngine(object):
             return self.game_state.player_A
         return self.game_state.player_B
 
-    def apply_turn(self, turn):
-        raise NotImplementedError()
+    def apply_turn(self, game_state, turn):
+        # TODO: proper implementation
+        return game_state

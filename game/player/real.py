@@ -9,4 +9,11 @@ class RealPlayer(BasePlayer):
     def get_turn(self, game_state):
         # TODO: should create Turn object by getting information
         # from console (implement simple logic; keywords: input(), print())
-        raise NotImplementedError()
+
+        while True:
+            action = input('Get action:')
+
+            if action == 'END_TURN':
+                break
+
+        return []

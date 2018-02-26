@@ -30,7 +30,7 @@ class BasePlayer(object):
                   "Minions: {minions}"
 
         return fmt_str.format(name=self.name,
-                              current_healt=self.health,
+                              current_health=self.health,
                               max_health=self.cfg.INITIAL_HEALTH,
                               current_mana=self.mana,
                               max_mana=self.cfg.INITIAL_MANA,

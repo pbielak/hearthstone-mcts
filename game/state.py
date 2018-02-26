@@ -16,7 +16,7 @@ class GameState(object):
 
     def is_terminal_state(self):
         """Check if game is over (one player lost)"""
-        is_player_A_dead = self.player_A.health == 0
-        is_player_B_dead = self.player_B.health == 0
+        is_player_A_dead = self.player_A.health <= 0
+        is_player_B_dead = self.player_B.health <= 0
         return is_player_A_dead or is_player_B_dead
 

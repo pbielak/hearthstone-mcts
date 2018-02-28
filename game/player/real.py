@@ -1,7 +1,7 @@
 """Real player"""
 from functools import partial
 
-from game.action import take_card
+from game.action import take_card, play_spell
 from game.player.base import BasePlayer
 
 
@@ -21,6 +21,8 @@ class RealPlayer(BasePlayer):
 
             if action == 'TAKE_CARD':
                 player_turn.append(partial(take_card, self.name))
+            elif action == 'PLAY_SPELL':
+                player_turn.append(partial(play_spell, self.name, 0))  # TODO: add card id
             elif action == 'END_TURN':
                 break
 

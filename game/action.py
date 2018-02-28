@@ -11,10 +11,23 @@ from copy import deepcopy
 
 def take_card(player_name, game_state):
     game_state_cpy = deepcopy(game_state)
-    if player_name == game_state_cpy.player_A.name:
-        game_state_cpy.player_A.cards.append(game_state_cpy.player_A.deck.pop())  # change to card here and below :)
-    elif player_name == game_state_cpy.player_B.name:
-        game_state_cpy.player_B.cards.append(game_state_cpy.player_A.deck.pop())
+    current_player = get_current_player(player_name, game_state_cpy)
+    current_player.cards.append(current_player.deck.pop())
+    return game_state_cpy
+
+
+def play_spell(player_name, card_idx, game_state):
+    game_state_cpy = deepcopy(game_state)
+    current_player = get_current_player(player_name, game_state_cpy)
+    game_state_cpy = current_player.cards[card_idx].apply(game_state_cpy,
+                                                          current_player, None)
+    return game_state_cpy
+
+
+def get_current_player(player_name, game_state):
+    if player_name == game_state.player_A.name:
+        return game_state.player_A
+    elif player_name == game_state.player_B.name:
+        return game_state.player_B
     else:
         raise ValueError("Wrong player!")
-    return game_state_cpy

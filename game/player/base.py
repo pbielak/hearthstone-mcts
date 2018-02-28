@@ -1,4 +1,5 @@
 """Player module"""
+from game.cards.deck import CardDeck
 
 
 class BasePlayer(object):
@@ -6,6 +7,7 @@ class BasePlayer(object):
     Health
     Mana points
 
+    Deck
     Cards
     Minions
     """
@@ -13,6 +15,7 @@ class BasePlayer(object):
         self.name = name
         self.health = cfg.INITIAL_HEALTH
         self.mana = cfg.INITIAL_MANA
+        self.deck = CardDeck()
         self.cards = []
         self.minions = []
         self.cfg = cfg
@@ -26,6 +29,7 @@ class BasePlayer(object):
     def __repr__(self):
         fmt_str = "Player: {name}; Health: {current_health}/{max_health}; " \
                   "Mana: {current_mana}/{max_mana}; " \
+                  "Deck: {deck}; " \
                   "Cards: {cards}; " \
                   "Minions: {minions}"
 
@@ -34,5 +38,6 @@ class BasePlayer(object):
                               max_health=self.cfg.INITIAL_HEALTH,
                               current_mana=self.mana,
                               max_mana=self.cfg.INITIAL_MANA,
+                              deck=self.deck,
                               cards=self.cards,
                               minions=self.minions)

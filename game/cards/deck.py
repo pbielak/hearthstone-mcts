@@ -12,17 +12,17 @@ class CardDeck(object):
         name (str): deck's owner (player name), mostly for debug reasons
         cards (list): list of card currently available in deck
     """
-    def __init__(self, name):
-        self.name = name
+    def __init__(self):
         self.cards = get_all_available_cards()
         random.shuffle(self.cards)
 
     def is_empty(self):
         return not self.cards
 
-    def __repr__(self):
-        fmt_str = "CardDeck: Name: {name}; " \
-                  "Cards: {cards}"
+    def pop(self):
+        return self.cards.pop(0)
 
-        return fmt_str.format(name=self.name,
-                              cards=self.cards)
+    def __repr__(self):
+        fmt_str = "CardDeck: {cards}"
+
+        return fmt_str.format(cards=self.cards)

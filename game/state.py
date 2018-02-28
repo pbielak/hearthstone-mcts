@@ -1,5 +1,4 @@
 """Hearthstone game state"""
-from game.cards.deck import CardDeck
 
 
 class GameState(object):
@@ -9,10 +8,7 @@ class GameState(object):
     """
     def __init__(self, cfg):
         self.player_A = cfg.player_A_cls('Pyjter', cfg)
-        self.card_deck_A = CardDeck(self.player_A.name)
-
         self.player_B = cfg.player_B_cls('Mati', cfg)
-        self.card_deck_B = CardDeck(self.player_B.name)
 
     def is_terminal_state(self):
         """Check if game is over (one player lost)"""
@@ -27,6 +23,6 @@ class GameState(object):
                   "Deck B: {deck_B};\n"
 
         return fmt_str.format(player_A=self.player_A,
-                              deck_A=self.card_deck_A,
+                              deck_A=self.player_A.deck,
                               player_B=self.player_B,
-                              deck_B=self.card_deck_B)
+                              deck_B=self.player_B.deck)

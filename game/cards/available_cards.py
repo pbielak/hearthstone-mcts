@@ -48,6 +48,7 @@ ALL_CARDS.extend([
 
 # WITH SIDE-EFFECT
 
+
 def restore_health_for_minions(game_state, source, target):
     """For each enemy minion, restore 2 Health to your hero."""
     game_state_cpy = deepcopy(game_state)
@@ -124,18 +125,16 @@ def draw_cards(game_state, source, target):
 
     if source is game_state.player_A:
         player = game_state_cpy.player_A
-        card_deck = game_state_cpy.card_deck_A
     elif source is game_state.player_B:
         player = game_state_cpy.player_B
-        card_deck = game_state_cpy.card_deck_B
     else:
         raise ValueError('Source must be a player!')
 
     for _ in range(4):
-        if card_deck.is_empty():
+        if player.deck.is_empty():
             player.health -= 1
         else:
-            card = card_deck.pop(0)
+            card = player.deck.pop()
             player.cards.append(card)
 
     return game_state_cpy

@@ -15,6 +15,7 @@ class BasePlayer(object):
         self.name = name
         self.health = cfg.INITIAL_HEALTH
         self.mana = cfg.INITIAL_MANA
+        self.already_used_mana = 0
         self.deck = CardDeck()
         self.cards = []
         self.minions = []

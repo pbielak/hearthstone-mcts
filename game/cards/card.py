@@ -38,7 +38,7 @@ class SpellCard(Card):
         self.effect = effect
 
     def apply(self, game_state, source, target):
-        return self.effect(deepcopy(game_state), source, target)
+        return self.effect(game_state, source, target)
 
     def __repr__(self):
         fmt_str = "SpellCard: {name}; " \

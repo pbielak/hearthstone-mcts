@@ -19,9 +19,36 @@ def take_card(player_name, game_state):
 def play_spell(player_name, card_idx, game_state):
     game_state_cpy = deepcopy(game_state)
     current_player = get_current_player(player_name, game_state_cpy)
-    game_state_cpy = current_player.cards[card_idx].apply(game_state_cpy,
-                                                          current_player, None)
+    game_state_cpy = current_player.cards[card_idx]\
+        .apply(game_state_cpy, current_player, None)
     return game_state_cpy
+
+
+def put_minion(player_name, card_idx, game_state):
+    game_state_cpy = deepcopy(game_state)
+    current_player = get_current_player(player_name, game_state_cpy)
+    card = current_player.cards[card_idx]
+    current_player.minions.append(card)
+    current_player.cards.remove(card)
+    return game_state_cpy
+
+
+def play_minion(player_name, minion_idx, target, game_state):
+    game_state_cpy = deepcopy(game_state)
+    current_player = get_current_player(player_name, game_state_cpy)
+    game_state_cpy = current_player.minions[minion_idx]\
+        .apply(game_state_cpy, current_player, target)
+    return game_state_cpy
+
+
+def can_use_card(player_name, card, game_state):
+    current_player = get_current_player(player_name, game_state)
+    return current_player.already_used_mana + card.cost <= current_player.mana
+
+
+def can_put_minion(player_name, game_state):
+    current_player = get_current_player(player_name, game_state)
+    return len(current_player.minions) < 7  # TODO, get from cfg
 
 
 def get_current_player(player_name, game_state):

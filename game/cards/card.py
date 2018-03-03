@@ -1,5 +1,4 @@
 """Base Card class"""
-from copy import deepcopy
 
 
 class Card(object):
@@ -38,7 +37,7 @@ class SpellCard(Card):
         self.effect = effect
 
     def apply(self, game_state, source, target):
-        return self.effect(game_state, source, target)
+        self.effect(game_state, source, target)
 
     def __repr__(self):
         fmt_str = "SpellCard: {name}; " \
@@ -47,7 +46,7 @@ class SpellCard(Card):
 
         return fmt_str.format(name=self.name,
                               cost=self.cost,
-                              effect=self.effect)
+                              effect=get_effect_name(self.effect))
 
 
 class MinionCard(Card):
@@ -67,30 +66,19 @@ class MinionCard(Card):
         self.attack = attack
         self.cost = cost
         self.side_effect = side_effect
+        self.can_attack = True
 
     def apply(self, game_state, source, target):
-        # Call side-effect
-        if self.side_effect is not None:
-            game_state_cpy = self.side_effect(game_state, source, target)
-        else:
-            game_state_cpy = deepcopy(game_state)
+        from game.player.base import BasePlayer  # Fix import-cycles
 
         # Perform attack
-        if target is game_state.player_A:
-            game_state_cpy.player_A.health -= self.attack
-        elif target is game_state.player_B:
-            game_state_cpy.player_B.health -= self.attack
+        if isinstance(target, BasePlayer):
+            target.health -= self.attack
         elif isinstance(target, MinionCard):
-            for idx, minion in enumerate(game_state.player_A.minions):
-                if target is minion:
-                    game_state_cpy.player_A.minions[idx].health -= self.attack
-            for idx, minion in enumerate(game_state.player_B.minions):
-                if target is minion:
-                    game_state_cpy.player_B.minions[idx].health -= self.attack
+            target.health -= self.attack
+            self.health -= target.attack
         else:
             raise ValueError('Target not defined or not recognized!')
-
-        return game_state_cpy
 
     def __repr__(self):
         fmt_str = "MinionCard: {name}; " \
@@ -101,5 +89,10 @@ class MinionCard(Card):
 
         return fmt_str.format(name=self.name, health=self.health,
                               attack=self.attack, cost=self.cost,
-                              side_effect=self.side_effect)
+                              side_effect=get_effect_name(self.side_effect))
 
+
+def get_effect_name(effect_func):
+    if effect_func is None:
+        return "None"
+    return effect_func.__name__

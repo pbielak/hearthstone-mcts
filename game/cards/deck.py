@@ -1,4 +1,5 @@
 """Card deck"""
+from copy import deepcopy
 import random
 
 from game.cards.available_cards import get_all_available_cards
@@ -13,8 +14,13 @@ class CardDeck(object):
         cards (list): list of card currently available in deck
     """
     def __init__(self):
-        self.cards = get_all_available_cards()
+        available_cards = get_all_available_cards()
+        # There should be 2 cards of each type
+        available_cards.extend(deepcopy(available_cards))
+        self.cards = available_cards
         random.shuffle(self.cards)
+
+        self.no_attempt_pop_when_empty = 0
 
     def is_empty(self):
         return not self.cards

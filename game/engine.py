@@ -1,6 +1,8 @@
 """Game engine"""
 from copy import deepcopy
+from functools import partial
 
+from game.action import take_card, set_total_mana
 from game.gui.gui_preparer import prepare_state
 from game.state import GameState
 
@@ -23,6 +25,7 @@ class GameEngine(object):
             print(prepare_state(self.game_state, self.cfg))
             player = self.choose_player()
             turn = player.get_turn(self.game_state)
+
             self.game_state = self.apply_turn(self.game_state, turn)
 
     def on_round_begin(self):

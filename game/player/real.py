@@ -1,10 +1,10 @@
 """Real player"""
 from functools import partial
 
-from game.action import take_card, play_spell, play_minion, put_minion, \
-    can_use_card
-from game.cards.card import SpellCard
+from game.action import play_spell, play_minion, put_minion
+from game.cards.card import SpellCard, MinionCard
 from game.player.base import BasePlayer
+from game.player.utils import get_card_to_use, can_use_card, can_put_minion
 
 
 class RealPlayer(BasePlayer):
@@ -12,32 +12,32 @@ class RealPlayer(BasePlayer):
         super(RealPlayer, self).__init__(name, cfg)
 
     def get_turn(self, game_state):
-        # from console (implement simple logic; keywords: input(), print())
-
         player_turn = []
 
         while True:
-            action_str = "Player {name}, get action:".format(name=self.name)
+            action_str = "Player {name}, get action [PUT_MINION, " \
+                         "PLAY_MINION, PLAY_SPELL, END_TURN]:"\
+                .format(name=self.name)
             action = input(action_str)
 
-            player_turn.append(partial(take_card, self.name))
-
             if action == 'PLAY_SPELL':
-                print("Available spell cards:")
-                for card_idx, card in enumerate(self.cards):
-                    if isinstance(card, SpellCard):
-                        print(card_idx, "=>", card)
-
-                action_idx = int(input("Choose spell card to use:"))
-                if can_use_card(self.name, self.cards[action_idx], game_state):
-                    player_turn.append(partial(play_spell, self.name,
-                                               action_idx))
+                card_idx = get_card_to_use(self.cards, SpellCard, "play")
+                if can_use_card(self.name, self.cards[card_idx], game_state):
+                    player_turn.append(partial(play_spell, self.name, card_idx))
                 else:
-                    print("Can not use card, because mana is too low...")
+                    print("Can not use this card...")
             elif action == 'PUT_MINION':
-                player_turn.append(partial(put_minion, self.name, 0))
+                card_idx = get_card_to_use(self.cards, MinionCard, "put")
+                if can_put_minion(self.name, game_state, self.cfg):
+                    player_turn.append(partial(put_minion, self.name, card_idx))
+                else:
+                    print("Can not put (specified) minion...")
             elif action == 'PLAY_MINION':
-                player_turn.append(partial(play_minion, self.name, 0, None))
+                card_idx = get_card_to_use(self.minions, MinionCard, "play")
+                if can_use_card(self.name, self.minions[card_idx], game_state):
+                    # TODO: get target
+                    player_turn.append(
+                        partial(play_minion, self.name, card_idx, None))
             elif action == 'END_TURN':
                 break
 

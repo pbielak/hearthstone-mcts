@@ -16,8 +16,8 @@ from game.player.utils import get_current_player
 
 def set_total_mana(mana, game_state):
     game_state_cpy = deepcopy(game_state)
-    game_state_cpy.player_A.mana += mana
-    game_state_cpy.player_B.mana += mana
+    game_state_cpy.player_A.mana = mana
+    game_state_cpy.player_B.mana = mana
     return game_state_cpy
 
 

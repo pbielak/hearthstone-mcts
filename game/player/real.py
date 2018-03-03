@@ -12,11 +12,13 @@ class RealPlayer(BasePlayer):
         super(RealPlayer, self).__init__(name, cfg)
 
     def get_turn(self, game_state):
+
         player_turn = []
 
         while True:
-            action_str = "Player {name}, get action [PUT_MINION, " \
-                         "PLAY_MINION, PLAY_SPELL, END_TURN]:"\
+            action_str = "Player {name}, get one action from listed below:\n" \
+                         "'PUT_MINION', 'PLAY_MINION', " \
+                         "'PLAY_SPELL', 'END_TURN':"\
                 .format(name=self.name)
             action = input(action_str)
 

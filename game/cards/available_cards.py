@@ -4,7 +4,7 @@ import random
 
 from game.cards.card import MinionCard
 from game.cards.card import SpellCard
-
+from game.cards.utils import get_players
 
 ALL_CARDS = []
 
@@ -51,37 +51,20 @@ ALL_CARDS.extend([
 
 def restore_health_for_minions(game_state, source, target):
     """For each enemy minion, restore 2 Health to your hero."""
-    game_state_cpy = deepcopy(game_state)
 
-    if source is game_state.player_A:
-        player = game_state_cpy.player_A
-        opponent = game_state_cpy.player_B
-    elif source is game_state.player_B:
-        player = game_state_cpy.player_B
-        opponent = game_state_cpy.player_A
-    else:
-        raise ValueError('Source must be a player!')
+    player, opponent = get_players(game_state, source)
 
-    player.health += 2 * len(opponent.minions)
-
-    return game_state_cpy
+    # Health is hard-coded to 20 as there is a problem with import-cycles :C
+    player.health = min(20, player.health + 2 * len(opponent.minions))
 
 
 def reduce_enemy_minions_attack_points(game_state, source, target):
     """Change all enemy minions' attack to 1."""
-    game_state_cpy = deepcopy(game_state)
 
-    if source is game_state.player_A:
-        opponent = game_state_cpy.player_B
-    elif source is game_state.player_B:
-        opponent = game_state_cpy.player_A
-    else:
-        raise ValueError('Source must be a player!')
+    _, opponent = get_players(game_state, source)
 
     for minion in opponent.minions:
         minion.attack = 1
-
-    return game_state_cpy
 
 
 ALL_CARDS.extend([
@@ -104,52 +87,31 @@ ALL_CARDS.extend([
 
 def deal_damage_to_enemy_minions(game_state, source, target):
     """Deal 4 damage to all enemy minions."""
-    game_state_cpy = deepcopy(game_state)
 
-    if source is game_state.player_A:
-        opponent = game_state_cpy.player_B
-    elif source is game_state.player_B:
-        opponent = game_state_cpy.player_A
-    else:
-        raise ValueError('Source must be a player!')
+    _, opponent = get_players(game_state, source)
 
     for minion in opponent.minions:
         minion.health -= 4
 
-    return game_state_cpy
-
 
 def draw_cards(game_state, source, target):
     """Draw 4 cards."""
-    game_state_cpy = deepcopy(game_state)
 
-    if source is game_state.player_A:
-        player = game_state_cpy.player_A
-    elif source is game_state.player_B:
-        player = game_state_cpy.player_B
-    else:
-        raise ValueError('Source must be a player!')
+    player, _ = get_players(game_state, source)
 
     for _ in range(4):
         if player.deck.is_empty():
-            player.health -= 1
+            player.deck.no_attempt_pop_when_empty += 1
+            player.health -= player.deck.no_attempt_pop_when_empty
         else:
             card = player.deck.pop()
             player.cards.append(card)
 
-    return game_state_cpy
-
 
 def deal_damage_to_random_enemy_minions(game_state, source, target):
     """Deal 3 damage to two random enemy minions."""
-    game_state_cpy = deepcopy(game_state)
 
-    if source is game_state.player_A:
-        opponent = game_state_cpy.player_B
-    elif source is game_state.player_B:
-        opponent = game_state_cpy.player_A
-    else:
-        raise ValueError('Source must be a player!')
+    _, opponent = get_players(game_state, source)
 
     target_minions = random.sample(
                         opponent.minions,
@@ -158,8 +120,6 @@ def deal_damage_to_random_enemy_minions(game_state, source, target):
 
     for minion in target_minions:
         minion.health -= 3
-
-    return game_state_cpy
 
 
 ALL_CARDS.extend([

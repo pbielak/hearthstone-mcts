@@ -1,10 +1,7 @@
 """Game engine"""
 from copy import deepcopy
-from functools import partial
 
-from game.action import take_card, set_total_mana
-from game.gui.gui_preparer import prepare_state
-from game.player.utils import get_current_player
+from game.action import take_card, increment_mana
 from game.state import GameState
 
 
@@ -21,39 +18,39 @@ class GameEngine(object):
         self.step_no = 0
 
     def run(self):
+        self.prepare_game()
+
         while not self.game_state.is_terminal_state():
-            self.on_round_begin()
+            self.step_no += 1
+            game_state_cpy = deepcopy(self.game_state)
 
-            player = self.choose_player()
+            player = self.choose_player(game_state_cpy)
+            game_state_cpy = self.prepare_player(player, game_state_cpy)
+            player.play_turn(game_state_cpy)
 
-            game_state_cpy = self.create_game_state_copy(self.game_state)
-            game_state_cpy = self.run_actions(player, game_state_cpy)
+            self.game_state = game_state_cpy
 
-            print(prepare_state(game_state_cpy, self.cfg))
-            turn = player.get_turn(game_state_cpy)
+    def choose_player(self, game_state):
+        if self.step_no % 2 == 1:
+            return game_state.player_A
+        return game_state.player_B
 
-            self.game_state = self.apply_turn(game_state_cpy, turn)
+    def prepare_player(self, player, game_state):
+        take_card(player)
+        increment_mana(self.cfg, player)
+        player.already_used_mana = 0
 
-    def on_round_begin(self):
-        self.step_no += 1
+        for minion in player.minions:
+            minion.can_attack = True
 
-    def choose_player(self):
-        if self.step_no % 2 == 0:
-            return self.game_state.player_A
-        return self.game_state.player_B
+            if minion.side_effect is not None:
+                minion.side_effect(game_state, player, None)
 
-    def run_actions(self, player, game_state):
-        game_state_tmp = take_card(player.name, game_state)
-        # TODO: improve by independent round counters
-        game_state_tmp = set_total_mana(self.step_no, game_state_tmp)
-        get_current_player(player.name, game_state_tmp)\
-            .already_used_mana = 0
-        return game_state_tmp
-
-    def apply_turn(self, game_state, turn):
-        for action in turn:
-            game_state = action(game_state)
         return game_state
 
-    def create_game_state_copy(self, game_state):
-        return deepcopy(game_state)
+    def prepare_game(self):
+        for _ in range(3):
+            take_card(self.game_state.player_A)
+
+        for _ in range(4):
+            take_card(self.game_state.player_B)

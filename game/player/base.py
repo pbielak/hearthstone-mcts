@@ -21,10 +21,7 @@ class BasePlayer(object):
         self.minions = []
         self.cfg = cfg
 
-    def get_turn(self, game_state):
-        """This method should be implemented in classes, which inherit
-        from this one. Here the actual actions should be chosen and
-        packed into a Turn object."""
+    def play_turn(self, game_state):
         pass
 
     def __repr__(self):

@@ -19,18 +19,26 @@ def prepare_state(game_state, cfg):
 
     game_state_str = game_state_str.format(
         player_B_name=game_state.player_B.name,
+        player_B_health=game_state.player_B.health,
         player_B_used_mana=game_state.player_B.already_used_mana,
         player_B_total_mana=game_state.player_B.mana,
-        player_B_health=game_state.player_B.health,
-        player_B_cards=game_state.player_B.cards,
-        player_B_minions=game_state.player_B.minions,
-        player_A_minions=game_state.player_A.minions,
-        player_A_cards=game_state.player_A.cards,
+        player_B_cards=_make_card_list(game_state.player_B.cards),
+        player_B_minions=_make_card_list(game_state.player_B.minions),
+
         player_A_name=game_state.player_A.name,
+        player_A_health=game_state.player_A.health,
         player_A_used_mana=game_state.player_A.already_used_mana,
         player_A_total_mana=game_state.player_A.mana,
-        player_A_health=game_state.player_A.health,
+        player_A_cards=_make_card_list(game_state.player_A.cards),
+        player_A_minions=_make_card_list(game_state.player_A.minions),
+
         total_health=cfg.INITIAL_HEALTH
     )
 
     return game_state_str
+
+
+def _make_card_list(cards):
+    cards_str = [str(card) for card in cards]
+
+    return "[\n{}\n]".format('\n'.join(cards_str))

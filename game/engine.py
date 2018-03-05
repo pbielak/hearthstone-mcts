@@ -30,6 +30,9 @@ class GameEngine(object):
 
             self.game_state = game_state_cpy
 
+        winning_player = self.game_state.get_winning_player()
+        print('Player {} won the game!'.format(winning_player.name))
+
     def choose_player(self, game_state):
         if self.step_no % 2 == 1:
             return game_state.player_A

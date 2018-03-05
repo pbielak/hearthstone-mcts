@@ -1,11 +1,9 @@
 """Real player"""
 from game.action import play_spell, play_minion, put_minion
 from game.cards.card import SpellCard, MinionCard
-from game.cards.utils import get_players
 from game.gui.gui_preparer import prepare_state
 from game.player.base import BasePlayer
-from game.player.utils import get_card_to_use, can_use_card, \
-    can_put_minion, cleanup_all_dead_minions
+from game.player import utils
 
 
 class RealPlayer(BasePlayer):
@@ -33,19 +31,19 @@ class RealPlayer(BasePlayer):
             else:
                 print('Unknown command!')
 
-            cleanup_all_dead_minions(game_state)
+            utils.cleanup_all_dead_minions(game_state)
 
     def _play_spell(self, game_state):
         card_idx = get_card_to_use(self.cards, SpellCard)
-        if can_use_card(self.name, self.cards[card_idx], game_state):
+        if utils.can_use_card(self, self.cards[card_idx], game_state):
             play_spell(self, card_idx, game_state)
         else:
             print("Cannot use this card...")
 
     def _put_minion(self, game_state):
         card_idx = get_card_to_use(self.cards, MinionCard)
-        if can_use_card(self.name, self.cards[card_idx], game_state) \
-                and can_put_minion(self.name, game_state, self.cfg):
+        if utils.can_use_card(self, self.cards[card_idx], game_state) \
+                and utils.can_put_minion(self, game_state, self.cfg):
             put_minion(self, card_idx)
         else:
             print("Cannot put minion...")
@@ -53,21 +51,38 @@ class RealPlayer(BasePlayer):
     def _play_minion(self, game_state):
         card_idx = get_card_to_use(self.minions, MinionCard)
         if self.minions[card_idx].can_attack:
-
-            _, opponent = get_players(game_state, self)
-            choice = int(input(
-                            'Get target [0. ENEMY_PLAYER, 1. ENEMY_MINION]:'))
-            if choice == 0:  # ENEMY_PLAYER
-                target = opponent
-            elif choice == 1:  # ENEMY_MINION
-                print('Enemy minions:')
-                for idx, minion in enumerate(opponent.minions):
-                    print(idx, '=>', minion)
-                chosen_idx = int(input('Get idx:'))
-                target = opponent.minions[chosen_idx]
-            else:
-                return
-
+            target = get_target_for_minion_attack(game_state, self)
             play_minion(self, card_idx, target, game_state)
         else:
             print('Cannot play minion...')
+
+
+def get_card_to_use(cards_list, cls):
+    info_fmt_str = "Available {card_type}s:".format(card_type=cls.__name__)
+    action_fmt_str = "Choose one card:"
+    print(info_fmt_str)
+
+    for card_idx, card in enumerate(cards_list):
+        if isinstance(card, cls):
+            print(card_idx, "=>", card)
+
+    choice = int(input(action_fmt_str))
+    if isinstance(cards_list[choice], cls):
+        return choice
+    else:
+        raise ValueError("Incorrect card index...")
+
+
+def get_target_for_minion_attack(game_state, player):
+    _, opponent = utils.get_players(game_state, player)
+
+    while True:
+        choice = int(input('Get target [0. ENEMY_PLAYER, 1. ENEMY_MINION]:'))
+        if choice == 0:  # ENEMY_PLAYER
+            return opponent
+        elif choice == 1:  # ENEMY_MINION
+            print('Enemy minions:')
+            for idx, minion in enumerate(opponent.minions):
+                print(idx, '=>', minion)
+            chosen_idx = int(input('Get idx:'))
+            return opponent.minions[chosen_idx]

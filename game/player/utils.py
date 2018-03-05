@@ -1,39 +1,14 @@
 """Utils"""
 
 
-def get_card_to_use(cards_list, cls):
-    info_fmt_str = "Available {card_type}s:".format(card_type=cls.__name__)
-    action_fmt_str = "Choose one card:"
-    print(info_fmt_str)
-
-    for card_idx, card in enumerate(cards_list):
-        if isinstance(card, cls):
-            print(card_idx, "=>", card)
-
-    choice = int(input(action_fmt_str))
-    if isinstance(cards_list[choice], cls):
-        return choice
-    else:
-        raise ValueError("Incorrect card index...")
-
-
-def can_use_card(player_name, card, game_state):
-    current_player = get_current_player(player_name, game_state)
+def can_use_card(player, card, game_state):
+    current_player, _ = get_players(game_state, player)
     return current_player.already_used_mana + card.cost <= current_player.mana
 
 
-def can_put_minion(player_name, game_state, cfg):
-    current_player = get_current_player(player_name, game_state)
+def can_put_minion(player, game_state, cfg):
+    current_player, _ = get_players(game_state, player)
     return len(current_player.minions) < cfg.MAX_MINIONS
-
-
-def get_current_player(player_name, game_state):
-    if player_name == game_state.player_A.name:
-        return game_state.player_A
-    elif player_name == game_state.player_B.name:
-        return game_state.player_B
-    else:
-        raise ValueError("Wrong player!")
 
 
 def cleanup_all_dead_minions(game_state):
@@ -41,3 +16,14 @@ def cleanup_all_dead_minions(game_state):
         player.minions = [
             minion for minion in player.minions if minion.health > 0
         ]
+
+
+def get_players(game_state, source):
+    if source is game_state.player_A:
+        player, opponent = game_state.player_A, game_state.player_B
+    elif source is game_state.player_B:
+        player, opponent = game_state.player_B, game_state.player_A
+    else:
+        raise ValueError('Source must be a player!')
+
+    return player, opponent

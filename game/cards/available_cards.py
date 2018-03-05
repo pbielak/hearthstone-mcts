@@ -4,7 +4,7 @@ import random
 
 from game.cards.card import MinionCard
 from game.cards.card import SpellCard
-from game.cards.utils import get_players
+from game.player.utils import get_players
 
 ALL_CARDS = []
 

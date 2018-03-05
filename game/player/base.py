@@ -24,6 +24,9 @@ class BasePlayer(object):
     def play_turn(self, game_state):
         pass
 
+    def is_dead(self):
+        return self.health <= 0
+
     def __repr__(self):
         fmt_str = "Player: {name}; Health: {current_health}/{max_health}; " \
                   "Mana: {current_mana}/{max_mana}; " \

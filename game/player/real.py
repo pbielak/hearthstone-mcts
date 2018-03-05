@@ -42,15 +42,15 @@ class RealPlayer(BasePlayer):
 
     def _put_minion(self, game_state):
         card_idx = get_card_to_use(self.cards, MinionCard)
-        if can_put_minion(self.name, game_state, self.cfg):
+        if can_use_card(self.name, self.cards[card_idx], game_state) \
+                and can_put_minion(self.name, game_state, self.cfg):
             put_minion(self, card_idx)
         else:
             print("Cannot put minion...")
 
     def _play_minion(self, game_state):
         card_idx = get_card_to_use(self.minions, MinionCard)
-        if can_use_card(self.name, self.minions[card_idx], game_state) \
-                and self.minions[card_idx].can_attack:
+        if self.minions[card_idx].can_attack:
 
             _, opponent = get_players(game_state, self)
             choice = input('Get target [ENEMY_PLAYER, ENEMY_MINION]:')

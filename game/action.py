@@ -40,10 +40,10 @@ def put_minion(player, card_idx):
     minion.can_attack = False
     player.minions.append(minion)
     player.cards.remove(minion)
+    player.already_used_mana += minion.cost
 
 
 def play_minion(player, minion_idx, target, game_state):
     minion = player.minions[minion_idx]
-    player.already_used_mana += minion.cost
     minion.apply(game_state, player, target)
     minion.can_attack = False

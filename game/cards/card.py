@@ -40,9 +40,9 @@ class SpellCard(Card):
         self.effect(game_state, source, target)
 
     def __repr__(self):
-        fmt_str = "SpellCard: {name}; " \
-                  "Cost: {cost}; " \
-                  "Effect: {effect}"
+        fmt_str = "SC({name}, " \
+                  "C: {cost}, " \
+                  "E: {effect})"
 
         return fmt_str.format(name=self.name,
                               cost=self.cost,
@@ -81,11 +81,11 @@ class MinionCard(Card):
             raise ValueError('Target not defined or not recognized!')
 
     def __repr__(self):
-        fmt_str = "MinionCard: {name}; " \
-                  "Health: {health}; " \
-                  "Attack: {attack}; " \
-                  "Cost: {cost}; " \
-                  "Side-effect: {side_effect}"
+        fmt_str = "MC({name}, " \
+                  "H: {health}, " \
+                  "A: {attack}, " \
+                  "C: {cost}, " \
+                  "SE: {side_effect})"
 
         return fmt_str.format(name=self.name, health=self.health,
                               attack=self.attack, cost=self.cost,

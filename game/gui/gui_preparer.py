@@ -41,4 +41,5 @@ def prepare_state(game_state, cfg):
 def _make_card_list(cards):
     cards_str = [str(card) for card in cards]
 
-    return "[\n{}\n]".format('\n'.join(cards_str))
+    # return "[\n{}\n]".format('\n'.join(cards_str))
+    return "{}".format(cards)

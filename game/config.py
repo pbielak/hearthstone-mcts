@@ -1,6 +1,7 @@
 """Common game configuration"""
 from collections import namedtuple
 
+from game.player.agent.random import RandomAgent
 from game.player.real import RealPlayer
 
 
@@ -21,6 +22,6 @@ def load_cfg():
         MAX_MINIONS=7,
         MAX_MANA=10,
         player_A_cls=RealPlayer,
-        player_B_cls=RealPlayer
+        player_B_cls=RandomAgent
     )
     return cfg

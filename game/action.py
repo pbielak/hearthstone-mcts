@@ -33,6 +33,7 @@ def play_spell(player, card_idx, game_state):
     card = player.cards[card_idx]
     player.already_used_mana += card.cost
     card.apply(game_state, player, None)
+    player.cards.remove(card)
 
 
 def put_minion(player, card_idx):

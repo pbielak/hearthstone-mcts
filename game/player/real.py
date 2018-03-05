@@ -14,6 +14,11 @@ class RealPlayer(BasePlayer):
         while True:
             print(prepare_state(game_state, self.cfg))
 
+            # --- TODO REMOVE ---
+            from pprint import pprint
+            pprint(utils.get_possible_actions(game_state, self, self.cfg))
+            # --- TODO END REMOVE ---
+
             action_str = "Player {name}, get one action from listed below:\n" \
                          "0. 'PUT_MINION', 1. 'PLAY_MINION', " \
                          "2. 'PLAY_SPELL', 3. 'END_TURN':"\
@@ -21,7 +26,7 @@ class RealPlayer(BasePlayer):
             action = int(input(action_str))
 
             if action == 0:  # PUT_MINION
-                self._put_minion(game_state)
+                self._put_minion()
             elif action == 1:  # PLAY_MINION
                 self._play_minion(game_state)
             elif action == 2:  # PLAY_SPELL
@@ -35,15 +40,15 @@ class RealPlayer(BasePlayer):
 
     def _play_spell(self, game_state):
         card_idx = get_card_to_use(self.cards, SpellCard)
-        if utils.can_use_card(self, self.cards[card_idx], game_state):
+        if utils.can_use_card(self, self.cards[card_idx]):
             play_spell(self, card_idx, game_state)
         else:
             print("Cannot use this card...")
 
-    def _put_minion(self, game_state):
+    def _put_minion(self):
         card_idx = get_card_to_use(self.cards, MinionCard)
-        if utils.can_use_card(self, self.cards[card_idx], game_state) \
-                and utils.can_put_minion(self, game_state, self.cfg):
+        if utils.can_use_card(self, self.cards[card_idx]) \
+                and utils.can_put_minion(self, self.cfg):
             put_minion(self, card_idx)
         else:
             print("Cannot put minion...")

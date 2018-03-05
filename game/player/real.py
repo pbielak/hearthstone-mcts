@@ -17,19 +17,21 @@ class RealPlayer(BasePlayer):
             print(prepare_state(game_state, self.cfg))
 
             action_str = "Player {name}, get one action from listed below:\n" \
-                         "'PUT_MINION', 'PLAY_MINION', " \
-                         "'PLAY_SPELL', 'END_TURN':"\
+                         "0. 'PUT_MINION', 1. 'PLAY_MINION', " \
+                         "2. 'PLAY_SPELL', 3. 'END_TURN':"\
                 .format(name=self.name)
-            action = input(action_str)
+            action = int(input(action_str))
 
-            if action == 'PLAY_SPELL':
-                self._play_spell(game_state)
-            elif action == 'PUT_MINION':
+            if action == 0:  # PUT_MINION
                 self._put_minion(game_state)
-            elif action == 'PLAY_MINION':
+            elif action == 1:  # PLAY_MINION
                 self._play_minion(game_state)
-            elif action == 'END_TURN':
+            elif action == 2:  # PLAY_SPELL
+                self._play_spell(game_state)
+            elif action == 3:  # END_TURN
                 break
+            else:
+                print('Unknown command!')
 
             cleanup_all_dead_minions(game_state)
 
@@ -53,10 +55,11 @@ class RealPlayer(BasePlayer):
         if self.minions[card_idx].can_attack:
 
             _, opponent = get_players(game_state, self)
-            choice = input('Get target [ENEMY_PLAYER, ENEMY_MINION]:')
-            if choice == 'ENEMY_PLAYER':
+            choice = int(input(
+                            'Get target [0. ENEMY_PLAYER, 1. ENEMY_MINION]:'))
+            if choice == 0:  # ENEMY_PLAYER
                 target = opponent
-            elif choice == 'ENEMY_MINION':
+            elif choice == 1:  # ENEMY_MINION
                 print('Enemy minions:')
                 for idx, minion in enumerate(opponent.minions):
                     print(idx, '=>', minion)

@@ -3,6 +3,7 @@
 First check the state of the field, if there aren't any enemy minions,
 then attack the enemy hero.
 """
+from game import config
 from game.player import base
 from game.player.agent import utils as ag_utils
 from game.player import utils as pl_utils
@@ -20,7 +21,8 @@ class ControllingAgent(base.BasePlayer):
             possible_actions = pl_utils.get_possible_actions(game_state, self)
 
             if possible_actions['no_actions']:
-                print(ControllingAgent.__name__, 'chose END_TURN')
+                if config.VERBOSE:
+                    print(ControllingAgent.__name__, 'chose END_TURN')
                 break
 
             player, opponent = pl_utils.get_players(game_state, self)

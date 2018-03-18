@@ -1,7 +1,6 @@
 """Real player"""
 from game import action
 from game.cards.card import MinionCard, SpellCard
-from game.gui import gui_preparer
 from game.player import base
 from game.player import utils
 
@@ -14,8 +13,6 @@ class RealPlayer(base.BasePlayer):
 
     def play_turn(self, game_state):
         while True:
-            print(gui_preparer.prepare_state(game_state))
-
             # --- TODO REMOVE ---
             from pprint import pprint
             pprint(utils.get_possible_actions(game_state, self))

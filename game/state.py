@@ -22,10 +22,15 @@ class GameState(object):
             return self.player_B
         elif self.player_B.is_dead():
             return self.player_A
-        else:
-            assert not self.is_terminal_state()
-            raise ValueError('Do not call get_winning_player '
-                             'before terminal state')
+
+        assert not self.is_terminal_state()
+        raise ValueError('Do not call get_winning_player '
+                         'before terminal state')
+
+    def get_current_player(self):
+        if self.curr_step % 2 == 1:
+            return self.player_A
+        return self.player_B
 
     def __repr__(self):
         return "GameState"

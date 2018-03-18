@@ -4,6 +4,7 @@ Randomly choose actions
 """
 import random
 
+from game import config
 from game.player import base
 from game.player.agent import utils as ag_utils
 from game.player import utils as pl_utils
@@ -20,7 +21,8 @@ class RandomAgent(base.BasePlayer):
             possible_actions = pl_utils.get_possible_actions(game_state, self)
 
             if possible_actions['no_actions']:
-                print(RandomAgent.__name__, 'chose END_TURN')
+                if config.VERBOSE:
+                    print(RandomAgent.__name__, 'chose END_TURN')
                 break
 
             pa = (*possible_actions['spell_plays'],

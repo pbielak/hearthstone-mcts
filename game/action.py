@@ -1,4 +1,5 @@
 """Player action"""
+from game import config
 
 # Single action like:
 #     * take card from deck (always forced; if no cards in deck,
@@ -12,8 +13,8 @@
 #######
 
 
-def increment_mana(cfg, player):
-    if player.mana < cfg.MAX_MANA:
+def increment_mana(player):
+    if player.mana < config.MAX_MANA:
         player.mana += 1
 
 

@@ -1,14 +1,15 @@
 """Utils"""
 from game import action
-from game.cards.card import MinionCard, SpellCard
+from game import config
+from game.cards import card as cards
 
 
 def can_use_card(player, card):
     return player.already_used_mana + card.cost <= player.mana
 
 
-def can_put_minion(player, cfg):
-    return len(player.minions) < cfg.MAX_MINIONS
+def can_put_minion(player):
+    return len(player.minions) < config.MAX_MINIONS
 
 
 def cleanup_all_dead_minions(game_state):
@@ -29,7 +30,7 @@ def get_players(game_state, source):
     return player, opponent
 
 
-def get_possible_actions(game_state, player, cfg):
+def get_possible_actions(game_state, player):
     actions = {
         'spell_plays': [],
         'minion_puts': [],
@@ -44,13 +45,13 @@ def get_possible_actions(game_state, player, cfg):
             continue
 
         # Play spell cards
-        if isinstance(card, SpellCard):
+        if isinstance(card, cards.SpellCard):
             actions['spell_plays'].append(
                 (action.play_spell, (player, idx, game_state))
             )
         # Put minion cards
-        elif isinstance(card, MinionCard):
-            if not can_put_minion(player, cfg):
+        elif isinstance(card, cards.MinionCard):
+            if not can_put_minion(player):
                 continue
             actions['minion_puts'].append(
                 (action.put_minion, (player, idx))

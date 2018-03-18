@@ -1,22 +1,22 @@
 """Real player"""
-from game.action import play_spell, play_minion, put_minion
-from game.cards.card import SpellCard, MinionCard
-from game.gui.gui_preparer import prepare_state
-from game.player.base import BasePlayer
+from game import action
+from game.cards import card as cards
+from game.gui import gui_preparer
+from game.player import base
 from game.player import utils
 
 
-class RealPlayer(BasePlayer):
-    def __init__(self, name, cfg):
-        super(RealPlayer, self).__init__(name, cfg)
+class RealPlayer(base.BasePlayer):
+    def __init__(self, name):
+        super(RealPlayer, self).__init__(name)
 
     def play_turn(self, game_state):
         while True:
-            print(prepare_state(game_state, self.cfg))
+            print(gui_preparer.prepare_state(game_state))
 
             # --- TODO REMOVE ---
             from pprint import pprint
-            pprint(utils.get_possible_actions(game_state, self, self.cfg))
+            pprint(utils.get_possible_actions(game_state, self))
             # --- TODO END REMOVE ---
 
             action_str = "Player {name}, get one action from listed below:\n" \
@@ -39,25 +39,25 @@ class RealPlayer(BasePlayer):
             utils.cleanup_all_dead_minions(game_state)
 
     def _play_spell(self, game_state):
-        card_idx = get_card_to_use(self.cards, SpellCard)
+        card_idx = get_card_to_use(self.cards, cards.SpellCard)
         if utils.can_use_card(self, self.cards[card_idx]):
-            play_spell(self, card_idx, game_state)
+            action.play_spell(self, card_idx, game_state)
         else:
             print("Cannot use this card...")
 
     def _put_minion(self):
-        card_idx = get_card_to_use(self.cards, MinionCard)
+        card_idx = get_card_to_use(self.cards, cards.MinionCard)
         if utils.can_use_card(self, self.cards[card_idx]) \
-                and utils.can_put_minion(self, self.cfg):
-            put_minion(self, card_idx)
+                and utils.can_put_minion(self):
+            action.put_minion(self, card_idx)
         else:
             print("Cannot put minion...")
 
     def _play_minion(self, game_state):
-        card_idx = get_card_to_use(self.minions, MinionCard)
+        card_idx = get_card_to_use(self.minions, cards.MinionCard)
         if self.minions[card_idx].can_attack:
             target = get_target_for_minion_attack(game_state, self)
-            play_minion(self, card_idx, target, game_state)
+            action.play_minion(self, card_idx, target, game_state)
         else:
             print('Cannot play minion...')
 

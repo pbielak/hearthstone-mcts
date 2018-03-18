@@ -1,8 +1,8 @@
 """Game engine"""
 from copy import deepcopy
 
-from game.action import take_card, increment_mana
-from game.state import GameState
+from game import action
+from game import state
 
 
 class GameEngine(object):
@@ -10,11 +10,9 @@ class GameEngine(object):
 
     Attributes:
         * game_state (GameState): the current game state
-        * cfg (Config): common configuration of the game
     """
-    def __init__(self, cfg):
-        self.cfg = cfg
-        self.game_state = GameState(cfg)
+    def __init__(self):
+        self.game_state = state.GameState()
 
     def run(self):
         self.prepare_game()
@@ -38,9 +36,10 @@ class GameEngine(object):
             return game_state.player_A
         return game_state.player_B
 
-    def prepare_player(self, player, game_state):
-        take_card(player)
-        increment_mana(self.cfg, player)
+    @staticmethod
+    def prepare_player(player, game_state):
+        action.take_card(player)
+        action.increment_mana(player)
         player.already_used_mana = 0
 
         for minion in player.minions:
@@ -53,7 +52,7 @@ class GameEngine(object):
 
     def prepare_game(self):
         for _ in range(3):
-            take_card(self.game_state.player_A)
+            action.take_card(self.game_state.player_A)
 
         for _ in range(4):
-            take_card(self.game_state.player_B)
+            action.take_card(self.game_state.player_B)

@@ -1,4 +1,5 @@
 """Hearthstone game state"""
+from game import config
 
 
 class GameState(object):
@@ -6,9 +7,9 @@ class GameState(object):
     Player A <--- CardDeck A
     Player B <--- CardDeck B
     """
-    def __init__(self, cfg):
-        self.player_A = cfg.player_A_cls('Pyjter', cfg)
-        self.player_B = cfg.player_B_cls('Mati', cfg)
+    def __init__(self):
+        self.player_A = config.PLAYER_A_CLS('Pyjter')
+        self.player_B = config.PLAYER_B_CLS('Mati')
         self.curr_step = 0
 
     def is_terminal_state(self):

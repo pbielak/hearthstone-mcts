@@ -3,20 +3,18 @@
 First check the state of the field, if there aren't any enemy minions,
 then attack the enemy hero.
 """
-from game.player.base import BasePlayer
+from game.player import base
 from game.player.agent import utils as ag_utils
 from game.player import utils as pl_utils
 
 
-class ControllingAgent(BasePlayer):
-    def __init__(self, name, cfg):
-        super(ControllingAgent, self).__init__(name, cfg)
+class ControllingAgent(base.BasePlayer):
+    def __init__(self, name):
+        super(ControllingAgent, self).__init__(name)
 
     def play_turn(self, game_state):
         while True:
-            possible_actions = pl_utils.get_possible_actions(game_state,
-                                                             self,
-                                                             self.cfg)
+            possible_actions = pl_utils.get_possible_actions(game_state, self)
 
             if possible_actions['no_actions']:
                 print(ControllingAgent.__name__, 'chose END_TURN')

@@ -1,7 +1,8 @@
 """Prints current game state"""
+from game import config
 
 
-def prepare_state(game_state, cfg):
+def prepare_state(game_state):
 
     game_state_str = "\n" \
                      "Player B {player_B_name} (mana: " \
@@ -32,7 +33,7 @@ def prepare_state(game_state, cfg):
         player_A_cards=_make_card_list(game_state.player_A.cards),
         player_A_minions=_make_card_list(game_state.player_A.minions),
 
-        total_health=cfg.INITIAL_HEALTH
+        total_health=config.INITIAL_HEALTH
     )
 
     return game_state_str

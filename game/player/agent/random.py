@@ -10,14 +10,12 @@ from game.player import utils as pl_utils
 
 
 class RandomAgent(base.BasePlayer):
-    def __init__(self, name, cfg):
-        super(RandomAgent, self).__init__(name, cfg)
+    def __init__(self, name):
+        super(RandomAgent, self).__init__(name)
 
     def play_turn(self, game_state):
         while True:
-            possible_actions = pl_utils.get_possible_actions(game_state,
-                                                             self,
-                                                             self.cfg)
+            possible_actions = pl_utils.get_possible_actions(game_state, self)
 
             if possible_actions['no_actions']:
                 print(RandomAgent.__name__, 'chose END_TURN')

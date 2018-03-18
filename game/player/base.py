@@ -1,5 +1,6 @@
 """Player module"""
-from game.cards.deck import CardDeck
+from game import config
+from game.cards import deck
 
 
 class BasePlayer(object):
@@ -11,15 +12,14 @@ class BasePlayer(object):
     Cards
     Minions
     """
-    def __init__(self, name, cfg):
+    def __init__(self, name):
         self.name = name
-        self.health = cfg.INITIAL_HEALTH
-        self.mana = cfg.INITIAL_MANA
+        self.health = config.INITIAL_HEALTH
+        self.mana = config.INITIAL_MANA
         self.already_used_mana = 0
-        self.deck = CardDeck()
+        self.deck = deck.CardDeck()
         self.cards = []
         self.minions = []
-        self.cfg = cfg
 
     def play_turn(self, game_state):
         pass
@@ -36,7 +36,7 @@ class BasePlayer(object):
         #
         # return fmt_str.format(name=self.name,
         #                       current_health=self.health,
-        #                       max_health=self.cfg.INITIAL_HEALTH,
+        #                       max_health=config.INITIAL_HEALTH,
         #                       current_mana=self.already_used_mana,
         #                       max_mana=self.mana,
         #                       deck=self.deck,

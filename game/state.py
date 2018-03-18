@@ -29,13 +29,4 @@ class GameState(object):
                              'before terminal state')
 
     def __repr__(self):
-        # fmt_str = "GameState: Player A: {player_A}; \n" \
-        #           "Deck A: {deck_A}; \n" \
-        #           "Player B: {player_B}; \n" \
-        #           "Deck B: {deck_B};\n"
-        #
-        # return fmt_str.format(player_A=self.player_A,
-        #                       deck_A=self.player_A.deck,
-        #                       player_B=self.player_B,
-        #                       deck_B=self.player_B.deck)
         return "GameState"

@@ -10,8 +10,10 @@ from game.player import utils as pl_utils
 
 
 class RandomAgent(base.BasePlayer):
-    def __init__(self, name):
-        super(RandomAgent, self).__init__(name)
+    def __init__(self, name, health, mana, already_used_mana,
+                 deck, cards, minions):
+        super(RandomAgent, self).__init__(name, health, mana, already_used_mana,
+                                          deck, cards, minions)
 
     def play_turn(self, game_state):
         while True:

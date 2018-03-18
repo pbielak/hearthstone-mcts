@@ -1,14 +1,16 @@
 """Real player"""
 from game import action
-from game.cards import card as cards
+from game.cards.card import MinionCard, SpellCard
 from game.gui import gui_preparer
 from game.player import base
 from game.player import utils
 
 
 class RealPlayer(base.BasePlayer):
-    def __init__(self, name):
-        super(RealPlayer, self).__init__(name)
+    def __init__(self, name, health, mana, already_used_mana,
+                 deck, cards, minions):
+        super(RealPlayer, self).__init__(name, health, mana, already_used_mana,
+                                         deck, cards, minions)
 
     def play_turn(self, game_state):
         while True:
@@ -39,14 +41,14 @@ class RealPlayer(base.BasePlayer):
             utils.cleanup_all_dead_minions(game_state)
 
     def _play_spell(self, game_state):
-        card_idx = get_card_to_use(self.cards, cards.SpellCard)
+        card_idx = get_card_to_use(self.cards, SpellCard)
         if utils.can_use_card(self, self.cards[card_idx]):
             action.play_spell(self, card_idx, game_state)
         else:
             print("Cannot use this card...")
 
     def _put_minion(self):
-        card_idx = get_card_to_use(self.cards, cards.MinionCard)
+        card_idx = get_card_to_use(self.cards, MinionCard)
         if utils.can_use_card(self, self.cards[card_idx]) \
                 and utils.can_put_minion(self):
             action.put_minion(self, card_idx)
@@ -54,7 +56,7 @@ class RealPlayer(base.BasePlayer):
             print("Cannot put minion...")
 
     def _play_minion(self, game_state):
-        card_idx = get_card_to_use(self.minions, cards.MinionCard)
+        card_idx = get_card_to_use(self.minions, MinionCard)
         if self.minions[card_idx].can_attack:
             target = get_target_for_minion_attack(game_state, self)
             action.play_minion(self, card_idx, target, game_state)

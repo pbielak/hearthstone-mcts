@@ -9,8 +9,11 @@ from game.player import utils as pl_utils
 
 
 class ControllingAgent(base.BasePlayer):
-    def __init__(self, name):
-        super(ControllingAgent, self).__init__(name)
+    def __init__(self, name, health, mana, already_used_mana,
+                 deck, cards, minions):
+        super(ControllingAgent, self).__init__(name, health, mana,
+                                               already_used_mana, deck,
+                                               cards, minions)
 
     def play_turn(self, game_state):
         while True:

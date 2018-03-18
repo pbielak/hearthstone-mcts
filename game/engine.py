@@ -10,18 +10,17 @@ class GameEngine(object):
 
     Attributes:
         * game_state (GameState): the current game state
-        * step_no (int): current game step number
+        * cfg (Config): common configuration of the game
     """
     def __init__(self, cfg):
         self.cfg = cfg
         self.game_state = GameState(cfg)
-        self.step_no = 0
 
     def run(self):
         self.prepare_game()
 
         while not self.game_state.is_terminal_state():
-            self.step_no += 1
+            self.game_state.curr_step += 1
             game_state_cpy = deepcopy(self.game_state)
 
             player = self.choose_player(game_state_cpy)
@@ -33,8 +32,9 @@ class GameEngine(object):
         winning_player = self.game_state.get_winning_player()
         print('Player {} won the game!'.format(winning_player.name))
 
-    def choose_player(self, game_state):
-        if self.step_no % 2 == 1:
+    @staticmethod
+    def choose_player(game_state):
+        if game_state.curr_step % 2 == 1:
             return game_state.player_A
         return game_state.player_B
 

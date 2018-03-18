@@ -9,6 +9,7 @@ class GameState(object):
     def __init__(self, cfg):
         self.player_A = cfg.player_A_cls('Pyjter', cfg)
         self.player_B = cfg.player_B_cls('Mati', cfg)
+        self.curr_step = 0
 
     def is_terminal_state(self):
         """Check if game is over (one player lost)"""

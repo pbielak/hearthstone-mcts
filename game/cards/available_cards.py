@@ -107,18 +107,15 @@ def draw_cards(game_state, source, target):
             player.cards.append(card)
 
 
-def deal_damage_to_random_enemy_minions(game_state, source, target):
-    """Deal 3 damage to two random enemy minions."""
+def deal_damage_to_all_enemies(game_state, source, target):
+    """Deal 2 damage to all enemies."""
 
     _, opponent = utils.get_players(game_state, source)
 
-    target_minions = random.sample(
-                        opponent.minions,
-                        min(2, len(opponent.minions))
-                     )
+    opponent.health -= 2
 
-    for minion in target_minions:
-        minion.health -= 3
+    for minion in opponent.minions:
+        minion.health -= 2
 
 
 ALL_CARDS.extend([
@@ -128,7 +125,7 @@ ALL_CARDS.extend([
     cards.SpellCard(name="Sprint",
                     cost=7,
                     effect=draw_cards),
-    cards.SpellCard(name="Multi-Shot",
+    cards.SpellCard(name="Consecration",
                     cost=4,
-                    effect=deal_damage_to_random_enemy_minions),
+                    effect=deal_damage_to_all_enemies),
 ])

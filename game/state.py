@@ -1,6 +1,4 @@
 """Hearthstone game state"""
-from game import config
-from game.player import utils
 
 
 class GameState(object):
@@ -8,14 +6,10 @@ class GameState(object):
     Player A <--- CardDeck A
     Player B <--- CardDeck B
     """
-    def __init__(self):
-        self.player_A = utils.create_player_from_default_config(
-            config.PLAYER_A_CLS, 'Pyjter'
-        )
-        self.player_B = utils.create_player_from_default_config(
-            config.PLAYER_B_CLS, 'Mati'
-        )
-        self.curr_step = 0
+    def __init__(self, player_A, player_B, curr_step):
+        self.player_A = player_A
+        self.player_B = player_B
+        self.curr_step = curr_step
 
     def is_terminal_state(self):
         """Check if game is over (one player lost)"""

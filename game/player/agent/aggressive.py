@@ -30,8 +30,8 @@ class AggressiveAgent(base.BasePlayer):
             if possible_actions['minion_plays']:
                 for pa in possible_actions['minion_plays']:
                     func, args = pa
-                    _, _, target, _ = args
-                    if target is opponent:
+                    _, _, target_idx, _ = args
+                    if target_idx == -1:  # -1 means opponent hero
                         ag_utils.perform_action(AggressiveAgent, pa)
 
                     # If enemy died end the turn (and game)

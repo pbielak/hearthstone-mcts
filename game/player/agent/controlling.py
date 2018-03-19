@@ -41,8 +41,8 @@ class ControllingAgent(base.BasePlayer):
                     if not opponent.minions:
                         for pa in possible_actions['minion_plays']:
                             func, args = pa
-                            _, _, target, _ = args
-                            if target is opponent:
+                            _, _, target_idx, _ = args
+                            if target_idx == -1:  # -1 means opponent hero
                                 ag_utils.perform_action(ControllingAgent, pa)
 
                             # If enemy died end the turn (and game)
@@ -53,8 +53,8 @@ class ControllingAgent(base.BasePlayer):
                     else:
                         for pa in possible_actions['minion_plays']:
                             func, args = pa
-                            _, _, target, _ = args
-                            if target is not opponent:
+                            _, _, target_idx, _ = args
+                            if target_idx != -1:
                                 ag_utils.perform_action(ControllingAgent, pa)
                                 pl_utils.cleanup_all_dead_minions(game_state)
                                 continue

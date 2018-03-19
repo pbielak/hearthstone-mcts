@@ -55,8 +55,8 @@ class RealPlayer(base.BasePlayer):
     def _play_minion(self, game_state):
         card_idx = get_card_to_use(self.minions, MinionCard)
         if self.minions[card_idx].can_attack:
-            target = get_target_for_minion_attack(game_state, self)
-            action.play_minion(card_idx, target, game_state)
+            target_idx = get_target_for_minion_attack(game_state)
+            action.play_minion(card_idx, target_idx, game_state)
         else:
             print('Cannot play minion...')
 
@@ -77,16 +77,16 @@ def get_card_to_use(cards_list, cls):
         raise ValueError("Incorrect card index...")
 
 
-def get_target_for_minion_attack(game_state, player):
+def get_target_for_minion_attack(game_state):
     _, opponent = game_state.get_players()
 
     while True:
         choice = int(input('Get target [0. ENEMY_PLAYER, 1. ENEMY_MINION]:'))
-        if choice == 0:  # ENEMY_PLAYER
-            return opponent
-        elif choice == 1:  # ENEMY_MINION
+        if choice == 0:  # ENEMY_PLAYER => -1
+            return -1
+        elif choice == 1:  # ENEMY_MINION => 0...x (index)
             print('Enemy minions:')
             for idx, minion in enumerate(opponent.minions):
                 print(idx, '=>', minion)
             chosen_idx = int(input('Get idx:'))
-            return opponent.minions[chosen_idx]
+            return chosen_idx

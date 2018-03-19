@@ -49,8 +49,13 @@ def put_minion(card_idx, game_state):
     player.already_used_mana += minion.cost
 
 
-def play_minion(minion_idx, target, game_state):
-    player, _ = game_state.get_players()
+def play_minion(minion_idx, target_idx, game_state):
+    player, opponent = game_state.get_players()
+
+    if target_idx == -1:
+        target = opponent
+    else:
+        target = opponent.minions[target_idx]
 
     minion = player.minions[minion_idx]
     minion.apply(game_state, player, target)

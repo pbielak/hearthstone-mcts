@@ -8,6 +8,6 @@ INITIAL_MANA = 0
 MAX_MINIONS = 7
 MAX_MANA = 10
 PLAYER_A_CLS = RealPlayer
-PLAYER_B_CLS = RandomAgent
+PLAYER_B_CLS = RealPlayer #RandomAgent
 
 VERBOSE = True

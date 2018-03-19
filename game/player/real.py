@@ -16,6 +16,13 @@ class RealPlayer(base.BasePlayer):
             # --- TODO REMOVE ---
             from pprint import pprint
             pprint(utils.get_possible_actions(game_state))
+
+            from mcts.turn import TurnGenerator
+            from copy import deepcopy
+            turns = TurnGenerator().generate_all_turns(deepcopy(game_state))
+            print(turns)
+            print(len(turns))
+
             # --- TODO END REMOVE ---
 
             action_str = "Player {name}, get one action from listed below:\n" \

@@ -36,25 +36,33 @@ def main_normal_game():
 
 
 def main():
-    results = []
+    # results = []
+    #
+    # for i in range(1000):
+    #     print(i)
+    #     gs = create_initial_game_state()
+    #     prepare_game(gs)
+    #
+    #     sim_result = simulate_random_game(gs)
+    #     results.append(sim_result)
+    #
+    # from collections import Counter
+    # cnt_results = Counter(results)
+    # print('#Wins:', cnt_results[1])
+    # print('#Looses:', cnt_results[-1])
+    from copy import deepcopy
+    from mcts.turn import generate_all_turns
 
-    for i in range(1000):
-        print(i)
-        gs = create_initial_game_state()
-        prepare_game(gs)
+    gs = create_initial_game_state()
+    prepare_game(gs)
 
-        sim_result = simulate_random_game(gs)
-        results.append(sim_result)
-
-    from collections import Counter
-    cnt_results = Counter(results)
-    print('#Wins:', cnt_results[1])
-    print('#Looses:', cnt_results[-1])
+    turns = generate_all_turns(deepcopy(gs))
+    print(turns)
 
 
 if __name__ == '__main__':
     main_normal_game()
-    #main()
+    # main()
 
 
 # Zdefiniowanie gracza agresywnego, defensywnego

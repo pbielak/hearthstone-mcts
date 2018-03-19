@@ -27,10 +27,11 @@ class GameState(object):
         raise ValueError('Do not call get_winning_player '
                          'before terminal state')
 
-    def get_current_player(self):
+    def get_players(self):
+        """Returns (current_player, opponent)"""
         if self.curr_step % 2 == 1:
-            return self.player_A
-        return self.player_B
+            return self.player_A, self.player_B
+        return self.player_B, self.player_A
 
     def __repr__(self):
         return "GameState"

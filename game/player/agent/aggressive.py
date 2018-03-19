@@ -24,7 +24,7 @@ class AggressiveAgent(base.BasePlayer):
                     print(AggressiveAgent.__name__, 'chose END_TURN')
                 break
 
-            player, opponent = pl_utils.get_players(game_state, self)
+            player, opponent = game_state.get_players()
 
             # Try to attack enemy hero
             if possible_actions['minion_plays']:

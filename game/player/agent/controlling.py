@@ -25,7 +25,7 @@ class ControllingAgent(base.BasePlayer):
                     print(ControllingAgent.__name__, 'chose END_TURN')
                 break
 
-            player, opponent = pl_utils.get_players(game_state, self)
+            player, opponent = game_state.get_players()
 
             # Check field
             # TODO: select best minion AND use spells!

@@ -15,5 +15,5 @@ def perform_action(cls, chosen_action):
     func, args = chosen_action
     func(*args)
 
-    if config.VERBOSE:
+    if config.VERBOSE and cls is not None:
         print(cls.__name__, 'chose', chosen_action)

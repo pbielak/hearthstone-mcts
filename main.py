@@ -53,8 +53,8 @@ def main():
 
 
 if __name__ == '__main__':
-    # main_normal_game()
-    main()
+    main_normal_game()
+    #main()
 
 
 # Zdefiniowanie gracza agresywnego, defensywnego

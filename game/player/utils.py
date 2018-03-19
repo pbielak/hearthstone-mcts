@@ -22,17 +22,6 @@ def cleanup_all_dead_minions(game_state):
         ]
 
 
-def get_players(game_state, source):
-    if source is game_state.player_A:
-        player, opponent = game_state.player_A, game_state.player_B
-    elif source is game_state.player_B:
-        player, opponent = game_state.player_B, game_state.player_A
-    else:
-        raise ValueError('Source must be a player!')
-
-    return player, opponent
-
-
 def get_possible_actions(game_state, player):
     actions = {
         'spell_plays': [],
@@ -41,7 +30,7 @@ def get_possible_actions(game_state, player):
         'no_actions': None
     }
 
-    _, opponent = get_players(game_state, player)
+    _, opponent = game_state.get_players()
 
     for idx, card in enumerate(player.cards):
         if not can_use_card(player, card):

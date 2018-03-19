@@ -1,9 +1,7 @@
 """All available cards"""
 from copy import deepcopy
-import random
 
 from game.cards import card as cards
-from game.player import utils
 
 ALL_CARDS = []
 
@@ -51,7 +49,7 @@ ALL_CARDS.extend([
 def restore_health_for_minions(game_state, source, target):
     """For each enemy minion, restore 2 Health to your hero."""
 
-    player, opponent = utils.get_players(game_state, source)
+    player, opponent = game_state.get_players()
 
     # Health is hard-coded to 20 as there is a problem with import-cycles :C
     player.health = min(20, player.health + 2 * len(opponent.minions))
@@ -60,7 +58,7 @@ def restore_health_for_minions(game_state, source, target):
 def reduce_enemy_minions_attack_points(game_state, source, target):
     """Change all enemy minions' attack to 1."""
 
-    _, opponent = utils.get_players(game_state, source)
+    _, opponent = game_state.get_players()
 
     for minion in opponent.minions:
         minion.attack = 1
@@ -87,7 +85,7 @@ ALL_CARDS.extend([
 def deal_damage_to_enemy_minions(game_state, source, target):
     """Deal 4 damage to all enemy minions."""
 
-    _, opponent = utils.get_players(game_state, source)
+    _, opponent = game_state.get_players()
 
     for minion in opponent.minions:
         minion.health -= 4
@@ -96,7 +94,7 @@ def deal_damage_to_enemy_minions(game_state, source, target):
 def draw_cards(game_state, source, target):
     """Draw 4 cards."""
 
-    player, _ = utils.get_players(game_state, source)
+    player, _ = game_state.get_players()
 
     for _ in range(4):
         if player.deck.is_empty():
@@ -110,7 +108,7 @@ def draw_cards(game_state, source, target):
 def deal_damage_to_all_enemies(game_state, source, target):
     """Deal 2 damage to all enemies."""
 
-    _, opponent = utils.get_players(game_state, source)
+    _, opponent = game_state.get_players()
 
     opponent.health -= 2
 

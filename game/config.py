@@ -10,4 +10,4 @@ MAX_MANA = 10
 PLAYER_A_CLS = RealPlayer
 PLAYER_B_CLS = RandomAgent
 
-VERBOSE = False
+VERBOSE = True

@@ -78,7 +78,7 @@ def get_card_to_use(cards_list, cls):
 
 
 def get_target_for_minion_attack(game_state, player):
-    _, opponent = utils.get_players(game_state, player)
+    _, opponent = game_state.get_players()
 
     while True:
         choice = int(input('Get target [0. ENEMY_PLAYER, 1. ENEMY_MINION]:'))

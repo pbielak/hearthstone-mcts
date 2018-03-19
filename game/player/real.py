@@ -15,7 +15,7 @@ class RealPlayer(base.BasePlayer):
         while True:
             # --- TODO REMOVE ---
             from pprint import pprint
-            pprint(utils.get_possible_actions(game_state, self))
+            pprint(utils.get_possible_actions(game_state))
             # --- TODO END REMOVE ---
 
             action_str = "Player {name}, get one action from listed below:\n" \
@@ -25,7 +25,7 @@ class RealPlayer(base.BasePlayer):
             action = int(input(action_str))
 
             if action == 0:  # PUT_MINION
-                self._put_minion()
+                self._put_minion(game_state)
             elif action == 1:  # PLAY_MINION
                 self._play_minion(game_state)
             elif action == 2:  # PLAY_SPELL
@@ -40,15 +40,15 @@ class RealPlayer(base.BasePlayer):
     def _play_spell(self, game_state):
         card_idx = get_card_to_use(self.cards, SpellCard)
         if utils.can_use_card(self, self.cards[card_idx]):
-            action.play_spell(self, card_idx, game_state)
+            action.play_spell(card_idx, game_state)
         else:
             print("Cannot use this card...")
 
-    def _put_minion(self):
+    def _put_minion(self, game_state):
         card_idx = get_card_to_use(self.cards, MinionCard)
         if utils.can_use_card(self, self.cards[card_idx]) \
                 and utils.can_put_minion(self):
-            action.put_minion(self, card_idx)
+            action.put_minion(card_idx, game_state)
         else:
             print("Cannot put minion...")
 
@@ -56,7 +56,7 @@ class RealPlayer(base.BasePlayer):
         card_idx = get_card_to_use(self.minions, MinionCard)
         if self.minions[card_idx].can_attack:
             target = get_target_for_minion_attack(game_state, self)
-            action.play_minion(self, card_idx, target, game_state)
+            action.play_minion(card_idx, target, game_state)
         else:
             print('Cannot play minion...')
 

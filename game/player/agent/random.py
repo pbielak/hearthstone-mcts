@@ -18,7 +18,7 @@ class RandomAgent(base.BasePlayer):
 
     def play_turn(self, game_state):
         while True:
-            possible_actions = pl_utils.get_possible_actions(game_state, self)
+            possible_actions = pl_utils.get_possible_actions(game_state)
 
             if possible_actions['no_actions']:
                 if config.VERBOSE:

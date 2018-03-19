@@ -22,7 +22,9 @@ def cleanup_all_dead_minions(game_state):
         ]
 
 
-def get_possible_actions(game_state, player):
+def get_possible_actions(game_state):
+    player, _ = game_state.get_players()
+
     actions = {
         'spell_plays': [],
         'minion_puts': [],
@@ -39,14 +41,14 @@ def get_possible_actions(game_state, player):
         # Play spell cards
         if isinstance(card, cards.SpellCard):
             actions['spell_plays'].append(
-                (action.play_spell, (player, idx, game_state))
+                (action.play_spell, (idx, game_state))
             )
         # Put minion cards
         elif isinstance(card, cards.MinionCard):
             if not can_put_minion(player):
                 continue
             actions['minion_puts'].append(
-                (action.put_minion, (player, idx))
+                (action.put_minion, (idx, game_state))
             )
 
     # Play minion (attack)
@@ -56,7 +58,7 @@ def get_possible_actions(game_state, player):
 
         for target in (opponent, *opponent.minions):
             actions['minion_plays'].append(
-                (action.play_minion, (player, idx, target, game_state))
+                (action.play_minion, (idx, target, game_state))
             )
 
     actions['no_actions'] = (not actions['spell_plays']) and \

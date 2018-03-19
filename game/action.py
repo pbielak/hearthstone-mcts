@@ -30,14 +30,18 @@ def take_card(player):
 #######
 
 
-def play_spell(player, card_idx, game_state):
+def play_spell(card_idx, game_state):
+    player, _ = game_state.get_players()
+
     card = player.cards[card_idx]
     player.already_used_mana += card.cost
     card.apply(game_state, player, None)
     player.cards.remove(card)
 
 
-def put_minion(player, card_idx):
+def put_minion(card_idx, game_state):
+    player, _ = game_state.get_players()
+
     minion = player.cards[card_idx]
     minion.can_attack = False
     player.minions.append(minion)
@@ -45,7 +49,9 @@ def put_minion(player, card_idx):
     player.already_used_mana += minion.cost
 
 
-def play_minion(player, minion_idx, target, game_state):
+def play_minion(minion_idx, target, game_state):
+    player, _ = game_state.get_players()
+
     minion = player.minions[minion_idx]
     minion.apply(game_state, player, target)
     minion.can_attack = False

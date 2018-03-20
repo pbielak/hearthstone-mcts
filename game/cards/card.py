@@ -48,6 +48,17 @@ class SpellCard(Card):
                               cost=self.cost,
                               effect=get_effect_name(self.effect))
 
+    def __hash__(self):
+        return hash((self.name,))
+
+    def __eq__(self, other):
+        if isinstance(other, SpellCard):
+            return self.name == other.name
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
 
 class MinionCard(Card):
     """Card representing a minion.
@@ -90,6 +101,20 @@ class MinionCard(Card):
         return fmt_str.format(name=self.name, health=self.health,
                               attack=self.attack, cost=self.cost,
                               side_effect=get_effect_name(self.side_effect))
+
+    def __hash__(self):
+        return hash((self.name, self.health, self.attack, self.can_attack))
+
+    def __eq__(self, other):
+        if isinstance(other, MinionCard):
+            return self.name == other.name and \
+                   self.health == other.health and \
+                   self.attack == other.attack and \
+                   self.can_attack == other.can_attack
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
 
 def get_effect_name(effect_func):

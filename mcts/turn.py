@@ -15,8 +15,19 @@ class Turn(object):
 
     def __repr__(self):
         if self.is_terminal:
-            return "TurnTERMINAL(actions={})".format(self.actions)
-        return "Turn(actions={})".format(self.actions)
+            return "TurnTERMINAL(actions={}, hash={})".format(self.actions, hash(self.game_state))
+        return "Turn(actions={}, hash={})".format(self.actions, hash(self.game_state))
+
+    def __hash__(self):
+        return hash(self.game_state)
+
+    def __eq__(self, other):
+        if isinstance(other, Turn):
+            return hash(self) == hash(other)
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
 
 class TurnGenerator(object):
@@ -24,6 +35,8 @@ class TurnGenerator(object):
         self.max_calculation_time = max_calculation_time  # in seconds
         self.start_time = 0
         self.current_time = 0
+
+        self.turns_set = set()
 
     def _time_limit_exceeded(self):
         return self.current_time - self.start_time > self.max_calculation_time
@@ -69,7 +82,14 @@ class TurnGenerator(object):
             turn = Turn()
             turn.actions.append(pa)
             turn.game_state = self._transform(game_state, pa)
-            turns.append(turn)
+            # Perform game_state consistency checks
+            pl_utils.cleanup_all_dead_minions(turn.game_state)
+            if turn.game_state.is_terminal_state():
+                turn.is_terminal = True
+
+            if turn not in self.turns_set:
+                self.turns_set.add(turn)
+                turns.append(turn)
 
             # If there is no time left...
             self.current_time = time.time()
@@ -95,7 +115,9 @@ class TurnGenerator(object):
                 if turn_cpy.game_state.is_terminal_state():
                     turn_cpy.is_terminal = True
 
-                nth_lvl_turns.append(turn_cpy)
+                if turn_cpy not in self.turns_set:
+                    self.turns_set.add(turn_cpy)
+                    nth_lvl_turns.append(turn_cpy)
 
                 # If there is no time left...
                 self.current_time = time.time()

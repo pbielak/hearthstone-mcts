@@ -29,3 +29,22 @@ class BasePlayer(object):
 
     def __repr__(self):
         return "Player: {}".format(self.name)
+
+    def __hash__(self):
+        return hash((self.name, self.health, self.mana,
+                     self.already_used_mana,
+                     tuple(self.cards), tuple(self.minions)))
+
+    def __eq__(self, other):
+        if isinstance(other, BasePlayer):
+            return hash(self) == hash(other)
+            # return self.name == other.name and \
+            #        self.health == other.health and \
+            #        self.mana == other.mana and \
+            #        self.already_used_mana == other.already_used_mana and \
+            #        self.cards == other.cards and \
+            #        self.minions == other.minions
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)

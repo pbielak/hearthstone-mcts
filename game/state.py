@@ -35,3 +35,17 @@ class GameState(object):
 
     def __repr__(self):
         return "GameState"
+
+    def __hash__(self):
+        return hash((self.player_A, self.player_B, self.curr_step))
+
+    def __eq__(self, other):
+        if isinstance(other, GameState):
+            return hash(self) == hash(other)
+            # return self.player_A == other.player_A and \
+            #        self.player_B == other.player_B and \
+            #        self.curr_step == other.curr_step
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)

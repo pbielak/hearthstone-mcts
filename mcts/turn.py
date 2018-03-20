@@ -11,8 +11,11 @@ class Turn(object):
     def __init__(self):
         self.actions = []
         self.game_state = None
+        self.is_terminal = False
 
     def __repr__(self):
+        if self.is_terminal:
+            return "TurnTERMINAL(actions={})".format(self.actions)
         return "Turn(actions={})".format(self.actions)
 
 
@@ -79,10 +82,19 @@ class TurnGenerator(object):
         nth_lvl_turns = []
 
         for turn in prev_lvl_turns:
+            if turn.is_terminal:
+                continue
+
             for pa in self._get_list_of_possible_actions(turn.game_state):
                 turn_cpy = deepcopy(turn)
                 turn_cpy.actions.append(pa)
+
                 turn_cpy.game_state = self._transform(turn.game_state, pa)
+                # Perform game_state consistency checks
+                pl_utils.cleanup_all_dead_minions(turn_cpy.game_state)
+                if turn_cpy.game_state.is_terminal_state():
+                    turn_cpy.is_terminal = True
+
                 nth_lvl_turns.append(turn_cpy)
 
                 # If there is no time left...

@@ -14,13 +14,11 @@ class RealPlayer(base.BasePlayer):
     def play_turn(self, game_state):
         while True:
             # --- TODO REMOVE ---
-            from game import config
             from game.gui import gui_preparer
 
-            if config.VERBOSE:
-                # Will double the gui output (but will show the state after
-                # each action of the RealPlayer)
-                print(gui_preparer.prepare_state(game_state))
+            # Will double the gui output (but will show the state after
+            # each action of the RealPlayer)
+            print(gui_preparer.prepare_state(game_state))
 
             from pprint import pprint
             pprint(utils.get_possible_actions(game_state))
@@ -28,7 +26,7 @@ class RealPlayer(base.BasePlayer):
             from mcts.turn import TurnGenerator
             from copy import deepcopy
             turns = TurnGenerator().generate_all_turns(deepcopy(game_state))
-            print(turns)
+            pprint(turns)
             print(len(turns))
 
             # --- TODO END REMOVE ---

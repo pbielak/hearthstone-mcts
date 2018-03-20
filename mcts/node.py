@@ -8,23 +8,31 @@ import numpy as np
 class Node(object):
     NODE_ID_COUNTER = 0
 
-    def __init__(self):
+    def __init__(self, state, parent):
         self.id = Node.NODE_ID_COUNTER
         Node.NODE_ID_COUNTER += 1
 
-
-class DecisionTurnNode(Node):
-    def __init__(self, state):
-        super(DecisionTurnNode, self).__init__()
-
         self.state = state
-        self.parent = None
+        self.parent = parent
         self.children = []
-        self.actions = []
-        self.action = None
 
         self.visited = 0
         self.reward = 0
+
+    def __repr__(self):
+        return "{}(id={}, children={})".format(
+            self.__class__.__name__,
+            self.id,
+            [child.id if child else "None" for child in self.children]
+        )
+
+
+class DecisionTurnNode(Node):
+    def __init__(self, state, parent):
+        super(DecisionTurnNode, self).__init__(state, parent)
+
+        self.actions = []
+        self.action = None
 
     def is_leaf(self):
         return not self.children
@@ -44,10 +52,9 @@ class DecisionTurnNode(Node):
 
 
 class DrawCardNode(Node):
-    def __init__(self, state):
-        super(DrawCardNode, self).__init__()
+    def __init__(self, state, parent):
+        super(DrawCardNode, self).__init__(state, parent)
 
-        self.state = state
         self.possible_cards, self.probs = self._get_all_card_draws(state)
         self.children = [None] * len(self.possible_cards)
 
@@ -101,10 +108,4 @@ class DrawCardNode(Node):
         # Remove from deck
         player.deck.cards.remove(card)
 
-        return DecisionTurnNode(state=game_state_cpy)
-
-    def __repr__(self):
-        return "DrawCardNode(id={}, children={})".format(
-            self.id,
-            [child.id if child else "None" for child in self.children]
-        )
+        return DecisionTurnNode(state=game_state_cpy, parent=self)

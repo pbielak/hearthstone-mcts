@@ -1,8 +1,12 @@
 """MCTS Tree Node"""
 from collections import Counter
 from copy import deepcopy
+import math
 
 import numpy as np
+
+from game import action
+from mcts.turn import TurnGenerator
 
 
 class Node(object):
@@ -25,6 +29,12 @@ class Node(object):
     def is_fully_expanded(self):
         pass
 
+    def expand(self):
+        pass
+
+    def get_best_child(self, coeff):
+        pass
+
     def __repr__(self):
         return "{}(id={}, children={})".format(
             self.__class__.__name__,
@@ -34,35 +44,53 @@ class Node(object):
 
 
 class DecisionTurnNode(Node):
-    def __init__(self, state, parent):
+    def __init__(self, state, parent, turns):
         super(DecisionTurnNode, self).__init__(state, parent)
 
-        self.turns = []
-        self.turn = None
+        self.turns = turns
+        #self.turns = TurnGenerator().generate_all_turns(state)
 
     def is_terminal(self):
-        return not self.children
+        return (not self.turns and not self.children) or self.state.is_terminal_state()  # not self.children
 
     def is_fully_expanded(self):
         return not self.turns
 
-    def __repr__(self):
-        fmt_str = "Node(" \
-                  "S: {state}," \
-                  "P: {parent}," \
-                  "C: {children})"
+    def expand(self):
+        chosen_turn = self.turns.pop()
 
-        return fmt_str.format(state=self.state,
-                              parent=self.parent,
-                              children=self.children)
+        new_child = DrawCardNode(state=chosen_turn.game_state,
+                                 parent=self,
+                                 turn=chosen_turn)
+        self.children.append(new_child)
+        return new_child.expand()
+
+    def get_best_child(self, coeff):
+        best_child = None
+        best_child_score = -99999
+
+        for child in self.children:
+            score = child.reward / child.visited + \
+                    coeff * math.sqrt(2 * math.log(self.visited)/child.visited)
+
+            if score > best_child_score:
+                best_child_score = score
+                best_child = child
+
+        return best_child
 
 
 class DrawCardNode(Node):
-    def __init__(self, state, parent):
+    def __init__(self, state, parent, turn):
         super(DrawCardNode, self).__init__(state, parent)
 
-        self.possible_cards, self.probs = self._get_all_card_draws(state)
-        self.children = [None] * len(self.possible_cards)
+        self.turn = turn
+
+        self.possible_cards = None
+        self.probs = None
+        self.children = None
+
+        self._get_all_card_draws(state)
 
     def is_terminal(self):
         return False
@@ -70,7 +98,22 @@ class DrawCardNode(Node):
     def is_fully_expanded(self):
         return self.children.count(None) == 0
 
-    def choose_child(self):
+    def expand(self, idx=None):
+        if idx is None:
+            not_expanded_idx = -1
+            for idx, elem in enumerate(self.children):
+                if elem is None:
+                    not_expanded_idx = idx
+                    break
+
+            assert not_expanded_idx != -1
+        else:
+            not_expanded_idx = idx
+
+        self.children[not_expanded_idx] = self._create_child(not_expanded_idx)
+        return self.children[not_expanded_idx]
+
+    def get_best_child(self, coeff):
         selected_card_idx = np.random.choice(
             len(self.possible_cards),
             p=self.probs
@@ -79,15 +122,27 @@ class DrawCardNode(Node):
         print(selected_card_idx)
 
         if self.children[selected_card_idx] is None:
-            # First time this child is selected,
-            # so it needs to be created
-            self.children[selected_card_idx] = self._create_child(
-                                                        selected_card_idx)
+            self.expand(selected_card_idx)
+
         return self.children[selected_card_idx]
 
-    @staticmethod
-    def _get_all_card_draws(game_state):
+    def _get_all_card_draws(self, game_state):
         player, _ = game_state.get_players()
+
+        if player.deck.is_empty():
+            # If deck is empty, there is only one possible child,
+            # which is created by reducing the players health
+            self.possible_cards = [None]
+            self.probs = [1.0]
+
+            game_state_cpy = deepcopy(game_state)
+            player, _ = game_state_cpy.get_players()
+            player.deck.no_attempt_pop_when_empty += 1
+            player.health -= player.deck.no_attempt_pop_when_empty
+
+            self.children = [DecisionTurnNode(state=game_state_cpy,
+                                              parent=self)]
+            return
 
         nb_cards_in_deck = len(player.deck.cards)
         possible_cards = []
@@ -97,7 +152,9 @@ class DrawCardNode(Node):
             possible_cards.append(card)
             probabilities.append(nb_card / nb_cards_in_deck)
 
-        return possible_cards, probabilities
+        self.possible_cards = possible_cards
+        self.probs = probabilities
+        self.children = [None] * len(self.possible_cards)
 
     def _create_child(self, card_idx):
         game_state_cpy = deepcopy(self.state)
@@ -120,4 +177,13 @@ class DrawCardNode(Node):
         # Remove from deck
         player.deck.cards.remove(card)
 
-        return DecisionTurnNode(state=game_state_cpy, parent=self)
+        # Check if any turns are possible
+        turns = TurnGenerator().generate_all_turns(game_state_cpy)
+        if not turns:
+            game_state_cpy.curr_step += 1
+            player, _ = game_state_cpy.get_players()
+            action.increment_mana(player)
+            player.already_used_mana = 0
+            return DrawCardNode(state=game_state_cpy, parent=self, turn=None)
+
+        return DecisionTurnNode(state=game_state_cpy, parent=self, turns=turns)

@@ -4,6 +4,7 @@ Turn generation for MCTS player
 from copy import deepcopy
 import time
 
+from game import action
 from game.player import utils as pl_utils
 
 
@@ -79,6 +80,9 @@ class TurnGenerator(object):
         for turn in turns_flattened:
             if not turn.is_terminal:
                 turn.game_state.curr_step += 1
+                player, _ = turn.game_state.get_players()
+                action.increment_mana(player)
+                player.already_used_mana = 0
 
         return turns_flattened
 

@@ -15,7 +15,7 @@ def simulate_random_game(game_state):
     :param game_state: (GameState) current state of the game
     :return: +1 if current player won, -1 if current player lost
     """
-    if game_state.is_terminal():
+    if game_state.is_terminal_state():
         winning_player = game_state.get_winning_player()
         current_player, _ = game_state.get_players()
     else:

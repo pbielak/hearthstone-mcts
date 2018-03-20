@@ -36,19 +36,21 @@ class Node(object):
         pass
 
     def __repr__(self):
-        return "{}(id={}, children={})".format(
+        return "{}(id={}, children={}, visited={}, reward={})".format(
             self.__class__.__name__,
             self.id,
-            [child.id if child else "None" for child in self.children]
+            [child.id if child else "None" for child in self.children],
+            self.visited,
+            self.reward
         )
 
 
 class DecisionTurnNode(Node):
     def __init__(self, state, parent, turns):
+        #print('Creating DecisionTurnNode!')
         super(DecisionTurnNode, self).__init__(state, parent)
 
         self.turns = turns
-        #self.turns = TurnGenerator().generate_all_turns(state)
 
     def is_terminal(self):
         return (not self.turns and not self.children) or self.state.is_terminal_state()  # not self.children
@@ -82,6 +84,7 @@ class DecisionTurnNode(Node):
 
 class DrawCardNode(Node):
     def __init__(self, state, parent, turn):
+        #print('Creating DrawCardNode!')
         super(DrawCardNode, self).__init__(state, parent)
 
         self.turn = turn
@@ -111,6 +114,10 @@ class DrawCardNode(Node):
             not_expanded_idx = idx
 
         self.children[not_expanded_idx] = self._create_child(not_expanded_idx)
+
+        if isinstance(self.children[not_expanded_idx], DrawCardNode):
+            return self.children[not_expanded_idx].expand()
+
         return self.children[not_expanded_idx]
 
     def get_best_child(self, coeff):
@@ -118,8 +125,6 @@ class DrawCardNode(Node):
             len(self.possible_cards),
             p=self.probs
         )
-
-        print(selected_card_idx)
 
         if self.children[selected_card_idx] is None:
             self.expand(selected_card_idx)

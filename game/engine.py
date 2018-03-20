@@ -24,8 +24,8 @@ class GameEngine(object):
             self.prepare_player(player, game_state_cpy)
 
             # Print current game_state
-            if config.VERBOSE:
-                print(gui_preparer.prepare_state(game_state_cpy))
+            #if config.VERBOSE:
+            #    print(gui_preparer.prepare_state(game_state_cpy))
 
             player.play_turn(game_state_cpy)
 

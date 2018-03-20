@@ -23,11 +23,11 @@ class RealPlayer(base.BasePlayer):
             from pprint import pprint
             pprint(utils.get_possible_actions(game_state))
 
-            from mcts.turn import TurnGenerator
-            from copy import deepcopy
-            turns = TurnGenerator().generate_all_turns(deepcopy(game_state))
-            pprint(turns)
-            print(len(turns))
+            # from mcts.turn import TurnGenerator
+            # from copy import deepcopy
+            # turns = TurnGenerator().generate_all_turns(deepcopy(game_state))
+            # pprint(turns)
+            # print(len(turns))
 
             # --- TODO END REMOVE ---
 

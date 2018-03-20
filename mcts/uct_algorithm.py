@@ -30,7 +30,11 @@ class UCTSearchAlgorithm(object):
 
         while not self.stop_condition():
             node = self.select_node(root_node)
+            print('Selected node:', node)
+
             reward = simulation(node.state)
+            print('Got reward:', reward)
+
             self.backpropagation(node, reward)
 
         return root_node.get_best_child(0).turn

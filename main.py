@@ -32,7 +32,8 @@ def main_normal_game():
     prepare_game(gs)
 
     eng = engine.GameEngine(gs)
-    eng.run()
+    winning_player = eng.run()
+    print(winning_player.__class__.__name__, 'won the game!')
 
 
 def main():

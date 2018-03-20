@@ -1,14 +1,18 @@
 """Utils"""
+from copy import deepcopy
+
 from game import action
-from game.cards.card import MinionCard, SpellCard
+from game import config
+from game.cards import card as cards
+from game.cards import deck
 
 
 def can_use_card(player, card):
     return player.already_used_mana + card.cost <= player.mana
 
 
-def can_put_minion(player, cfg):
-    return len(player.minions) < cfg.MAX_MINIONS
+def can_put_minion(player):
+    return len(player.minions) < config.MAX_MINIONS
 
 
 def cleanup_all_dead_minions(game_state):
@@ -18,18 +22,7 @@ def cleanup_all_dead_minions(game_state):
         ]
 
 
-def get_players(game_state, source):
-    if source is game_state.player_A:
-        player, opponent = game_state.player_A, game_state.player_B
-    elif source is game_state.player_B:
-        player, opponent = game_state.player_B, game_state.player_A
-    else:
-        raise ValueError('Source must be a player!')
-
-    return player, opponent
-
-
-def get_possible_actions(game_state, player, cfg):
+def get_possible_actions(game_state):
     actions = {
         'spell_plays': [],
         'minion_puts': [],
@@ -37,23 +30,23 @@ def get_possible_actions(game_state, player, cfg):
         'no_actions': None
     }
 
-    _, opponent = get_players(game_state, player)
+    player, opponent = game_state.get_players()
 
     for idx, card in enumerate(player.cards):
         if not can_use_card(player, card):
             continue
 
         # Play spell cards
-        if isinstance(card, SpellCard):
+        if isinstance(card, cards.SpellCard):
             actions['spell_plays'].append(
-                (action.play_spell, (player, idx, game_state))
+                (action.play_spell, (idx, game_state))
             )
         # Put minion cards
-        elif isinstance(card, MinionCard):
-            if not can_put_minion(player, cfg):
+        elif isinstance(card, cards.MinionCard):
+            if not can_put_minion(player):
                 continue
             actions['minion_puts'].append(
-                (action.put_minion, (player, idx))
+                (action.put_minion, (idx, game_state))
             )
 
     # Play minion (attack)
@@ -61,9 +54,9 @@ def get_possible_actions(game_state, player, cfg):
         if not minion.can_attack:
             continue
 
-        for target in (opponent, *opponent.minions):
+        for target_idx in (-1, *list(range(len(opponent.minions)))):
             actions['minion_plays'].append(
-                (action.play_minion, (player, idx, target, game_state))
+                (action.play_minion, (idx, target_idx, game_state))
             )
 
     actions['no_actions'] = (not actions['spell_plays']) and \
@@ -71,3 +64,23 @@ def get_possible_actions(game_state, player, cfg):
                             (not actions['minion_puts'])
 
     return actions
+
+
+def create_player_from_default_config(player_cls, name):
+    return player_cls(name=name,
+                      health=config.INITIAL_HEALTH,
+                      mana=config.INITIAL_MANA,
+                      already_used_mana=0,
+                      deck=deck.CardDeck(),
+                      cards=list(),
+                      minions=list())
+
+
+def create_player_from_another_player(target_player_cls, source_player_obj):
+    return target_player_cls(name=source_player_obj.name,
+                             health=source_player_obj.health,
+                             mana=source_player_obj.mana,
+                             already_used_mana=source_player_obj.already_used_mana,
+                             deck=deepcopy(source_player_obj.deck),
+                             cards=deepcopy(source_player_obj.cards),
+                             minions=deepcopy(source_player_obj.minions))

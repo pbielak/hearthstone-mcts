@@ -1,4 +1,5 @@
 """Agent utils"""
+from game import config
 
 
 def score_field(player):
@@ -13,4 +14,6 @@ def score_field(player):
 def perform_action(cls, chosen_action):
     func, args = chosen_action
     func(*args)
-    print(cls.__name__, 'chose', chosen_action)
+
+    if config.VERBOSE and cls is not None:
+        print(cls.__name__, 'chose', chosen_action)

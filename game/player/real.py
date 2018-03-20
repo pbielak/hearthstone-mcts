@@ -1,22 +1,34 @@
 """Real player"""
-from game.action import play_spell, play_minion, put_minion
-from game.cards.card import SpellCard, MinionCard
-from game.gui.gui_preparer import prepare_state
-from game.player.base import BasePlayer
+from game import action
+from game.cards.card import MinionCard, SpellCard
+from game.player import base
 from game.player import utils
 
 
-class RealPlayer(BasePlayer):
-    def __init__(self, name, cfg):
-        super(RealPlayer, self).__init__(name, cfg)
+class RealPlayer(base.BasePlayer):
+    def __init__(self, name, health, mana, already_used_mana,
+                 deck, cards, minions):
+        super(RealPlayer, self).__init__(name, health, mana, already_used_mana,
+                                         deck, cards, minions)
 
     def play_turn(self, game_state):
         while True:
-            print(prepare_state(game_state, self.cfg))
-
             # --- TODO REMOVE ---
+            from game.gui import gui_preparer
+
+            # Will double the gui output (but will show the state after
+            # each action of the RealPlayer)
+            print(gui_preparer.prepare_state(game_state))
+
             from pprint import pprint
-            pprint(utils.get_possible_actions(game_state, self, self.cfg))
+            pprint(utils.get_possible_actions(game_state))
+
+            from mcts.turn import TurnGenerator
+            from copy import deepcopy
+            turns = TurnGenerator().generate_all_turns(deepcopy(game_state))
+            pprint(turns)
+            print(len(turns))
+
             # --- TODO END REMOVE ---
 
             action_str = "Player {name}, get one action from listed below:\n" \
@@ -26,7 +38,7 @@ class RealPlayer(BasePlayer):
             action = int(input(action_str))
 
             if action == 0:  # PUT_MINION
-                self._put_minion()
+                self._put_minion(game_state)
             elif action == 1:  # PLAY_MINION
                 self._play_minion(game_state)
             elif action == 2:  # PLAY_SPELL
@@ -37,27 +49,29 @@ class RealPlayer(BasePlayer):
                 print('Unknown command!')
 
             utils.cleanup_all_dead_minions(game_state)
+            if game_state.is_terminal_state():
+                break
 
     def _play_spell(self, game_state):
         card_idx = get_card_to_use(self.cards, SpellCard)
         if utils.can_use_card(self, self.cards[card_idx]):
-            play_spell(self, card_idx, game_state)
+            action.play_spell(card_idx, game_state)
         else:
             print("Cannot use this card...")
 
-    def _put_minion(self):
+    def _put_minion(self, game_state):
         card_idx = get_card_to_use(self.cards, MinionCard)
         if utils.can_use_card(self, self.cards[card_idx]) \
-                and utils.can_put_minion(self, self.cfg):
-            put_minion(self, card_idx)
+                and utils.can_put_minion(self):
+            action.put_minion(card_idx, game_state)
         else:
             print("Cannot put minion...")
 
     def _play_minion(self, game_state):
         card_idx = get_card_to_use(self.minions, MinionCard)
         if self.minions[card_idx].can_attack:
-            target = get_target_for_minion_attack(game_state, self)
-            play_minion(self, card_idx, target, game_state)
+            target_idx = get_target_for_minion_attack(game_state)
+            action.play_minion(card_idx, target_idx, game_state)
         else:
             print('Cannot play minion...')
 
@@ -78,16 +92,16 @@ def get_card_to_use(cards_list, cls):
         raise ValueError("Incorrect card index...")
 
 
-def get_target_for_minion_attack(game_state, player):
-    _, opponent = utils.get_players(game_state, player)
+def get_target_for_minion_attack(game_state):
+    _, opponent = game_state.get_players()
 
     while True:
         choice = int(input('Get target [0. ENEMY_PLAYER, 1. ENEMY_MINION]:'))
-        if choice == 0:  # ENEMY_PLAYER
-            return opponent
-        elif choice == 1:  # ENEMY_MINION
+        if choice == 0:  # ENEMY_PLAYER => -1
+            return -1
+        elif choice == 1:  # ENEMY_MINION => 0...x (index)
             print('Enemy minions:')
             for idx, minion in enumerate(opponent.minions):
                 print(idx, '=>', minion)
             chosen_idx = int(input('Get idx:'))
-            return opponent.minions[chosen_idx]
+            return chosen_idx

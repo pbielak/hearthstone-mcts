@@ -1,8 +1,9 @@
 """Game engine"""
 from copy import deepcopy
 
-from game.action import take_card, increment_mana
-from game.state import GameState
+from game import action
+from game import config
+from game.gui import gui_preparer
 
 
 class GameEngine(object):
@@ -10,37 +11,37 @@ class GameEngine(object):
 
     Attributes:
         * game_state (GameState): the current game state
-        * step_no (int): current game step number
     """
-    def __init__(self, cfg):
-        self.cfg = cfg
-        self.game_state = GameState(cfg)
-        self.step_no = 0
+    def __init__(self, game_state):
+        self.game_state = game_state
 
     def run(self):
-        self.prepare_game()
-
         while not self.game_state.is_terminal_state():
-            self.step_no += 1
+            self.game_state.curr_step += 1
             game_state_cpy = deepcopy(self.game_state)
 
-            player = self.choose_player(game_state_cpy)
+            player, _ = game_state_cpy.get_players()
             game_state_cpy = self.prepare_player(player, game_state_cpy)
+
+            # Print current game_state
+            if config.VERBOSE:
+                print(gui_preparer.prepare_state(game_state_cpy))
+
             player.play_turn(game_state_cpy)
 
             self.game_state = game_state_cpy
 
         winning_player = self.game_state.get_winning_player()
-        print('Player {} won the game!'.format(winning_player.name))
 
-    def choose_player(self, game_state):
-        if self.step_no % 2 == 1:
-            return game_state.player_A
-        return game_state.player_B
+        if config.VERBOSE:
+            print('Player {} won the game!'.format(winning_player.name))
 
-    def prepare_player(self, player, game_state):
-        take_card(player)
-        increment_mana(self.cfg, player)
+        return winning_player
+
+    @staticmethod
+    def prepare_player(player, game_state):
+        action.take_card(player)
+        action.increment_mana(player)
         player.already_used_mana = 0
 
         for minion in player.minions:
@@ -50,10 +51,3 @@ class GameEngine(object):
                 minion.side_effect(game_state, player, None)
 
         return game_state
-
-    def prepare_game(self):
-        for _ in range(3):
-            take_card(self.game_state.player_A)
-
-        for _ in range(4):
-            take_card(self.game_state.player_B)

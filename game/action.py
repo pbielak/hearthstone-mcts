@@ -1,4 +1,5 @@
 """Player action"""
+from game import config
 
 # Single action like:
 #     * take card from deck (always forced; if no cards in deck,
@@ -12,8 +13,8 @@
 #######
 
 
-def increment_mana(cfg, player):
-    if player.mana < cfg.MAX_MANA:
+def increment_mana(player):
+    if player.mana < config.MAX_MANA:
         player.mana += 1
 
 
@@ -29,14 +30,18 @@ def take_card(player):
 #######
 
 
-def play_spell(player, card_idx, game_state):
+def play_spell(card_idx, game_state):
+    player, _ = game_state.get_players()
+
     card = player.cards[card_idx]
     player.already_used_mana += card.cost
     card.apply(game_state, player, None)
     player.cards.remove(card)
 
 
-def put_minion(player, card_idx):
+def put_minion(card_idx, game_state):
+    player, _ = game_state.get_players()
+
     minion = player.cards[card_idx]
     minion.can_attack = False
     player.minions.append(minion)
@@ -44,7 +49,14 @@ def put_minion(player, card_idx):
     player.already_used_mana += minion.cost
 
 
-def play_minion(player, minion_idx, target, game_state):
+def play_minion(minion_idx, target_idx, game_state):
+    player, opponent = game_state.get_players()
+
+    if target_idx == -1:
+        target = opponent
+    else:
+        target = opponent.minions[target_idx]
+
     minion = player.minions[minion_idx]
     minion.apply(game_state, player, target)
     minion.can_attack = False

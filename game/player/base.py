@@ -1,5 +1,4 @@
 """Player module"""
-from game.cards.deck import CardDeck
 
 
 class BasePlayer(object):
@@ -11,15 +10,16 @@ class BasePlayer(object):
     Cards
     Minions
     """
-    def __init__(self, name, cfg):
+
+    def __init__(self, name, health, mana, already_used_mana,
+                 deck, cards, minions):
         self.name = name
-        self.health = cfg.INITIAL_HEALTH
-        self.mana = cfg.INITIAL_MANA
-        self.already_used_mana = 0
-        self.deck = CardDeck()
-        self.cards = []
-        self.minions = []
-        self.cfg = cfg
+        self.health = health
+        self.mana = mana
+        self.already_used_mana = already_used_mana
+        self.deck = deck
+        self.cards = cards
+        self.minions = minions
 
     def play_turn(self, game_state):
         pass
@@ -28,19 +28,23 @@ class BasePlayer(object):
         return self.health <= 0
 
     def __repr__(self):
-        # fmt_str = "Player: {name}; Health: {current_health}/{max_health}; " \
-        #           "Mana: {current_mana}/{max_mana}; " \
-        #           "Deck: {deck}; " \
-        #           "Cards: {cards}; " \
-        #           "Minions: {minions}"
-        #
-        # return fmt_str.format(name=self.name,
-        #                       current_health=self.health,
-        #                       max_health=self.cfg.INITIAL_HEALTH,
-        #                       current_mana=self.already_used_mana,
-        #                       max_mana=self.mana,
-        #                       deck=self.deck,
-        #                       cards=self.cards,
-        #                       minions=self.minions)
+        return "Player: {}".format(self.name)
 
-        return self.name
+    def __hash__(self):
+        return hash((self.name, self.health, self.mana,
+                     self.already_used_mana,
+                     tuple(self.cards), tuple(self.minions)))
+
+    def __eq__(self, other):
+        if isinstance(other, BasePlayer):
+            return hash(self) == hash(other)
+            # return self.name == other.name and \
+            #        self.health == other.health and \
+            #        self.mana == other.mana and \
+            #        self.already_used_mana == other.already_used_mana and \
+            #        self.cards == other.cards and \
+            #        self.minions == other.minions
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)

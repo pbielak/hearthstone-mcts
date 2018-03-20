@@ -2,33 +2,36 @@
 
 First attack the enemy hero, then check the field.
 """
-from game.player.base import BasePlayer
+from game import config
+from game.player import base
 from game.player.agent import utils as ag_utils
 from game.player import utils as pl_utils
 
 
-class AggressiveAgent(BasePlayer):
-    def __init__(self, name, cfg):
-        super(AggressiveAgent, self).__init__(name, cfg)
+class AggressiveAgent(base.BasePlayer):
+    def __init__(self, name, health, mana, already_used_mana,
+                 deck, cards, minions):
+        super(AggressiveAgent, self).__init__(name, health, mana,
+                                              already_used_mana, deck,
+                                              cards, minions)
 
     def play_turn(self, game_state):
         while True:
-            possible_actions = pl_utils.get_possible_actions(game_state,
-                                                             self,
-                                                             self.cfg)
+            possible_actions = pl_utils.get_possible_actions(game_state)
 
             if possible_actions['no_actions']:
-                print(AggressiveAgent.__name__, 'chose END_TURN')
+                if config.VERBOSE:
+                    print(AggressiveAgent.__name__, 'chose END_TURN')
                 break
 
-            player, opponent = pl_utils.get_players(game_state, self)
+            player, opponent = game_state.get_players()
 
             # Try to attack enemy hero
             if possible_actions['minion_plays']:
                 for pa in possible_actions['minion_plays']:
                     func, args = pa
-                    _, _, target, _ = args
-                    if target is opponent:
+                    _, _, target_idx, _ = args
+                    if target_idx == -1:  # -1 means opponent hero
                         ag_utils.perform_action(AggressiveAgent, pa)
 
                     # If enemy died end the turn (and game)

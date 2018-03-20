@@ -15,11 +15,15 @@ def simulate_random_game(game_state):
     :param game_state: (GameState) current state of the game
     :return: +1 if current player won, -1 if current player lost
     """
-    game_state_sim = prepare_simulation_game_state(game_state)
-    current_player, _ = game_state_sim.get_players()
+    if game_state.is_terminal():
+        winning_player = game_state.get_winning_player()
+        current_player, _ = game_state.get_players()
+    else:
+        game_state_sim = prepare_simulation_game_state(game_state)
+        current_player, _ = game_state_sim.get_players()
 
-    eng = engine.GameEngine(game_state_sim)
-    winning_player = eng.run()
+        eng = engine.GameEngine(game_state_sim)
+        winning_player = eng.run()
 
     if winning_player.name == current_player.name:
         return 1

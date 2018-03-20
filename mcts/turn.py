@@ -74,6 +74,12 @@ class TurnGenerator(object):
         )
 
         turns_flattened = [t for lvl_turn in turns for t in lvl_turn]
+
+        # For all non-terminal states, update game_state step(!)
+        for turn in turns_flattened:
+            if not turn.is_terminal:
+                turn.game_state.curr_step += 1
+
         return turns_flattened
 
     def _create_initial_turns(self, game_state):

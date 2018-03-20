@@ -19,6 +19,12 @@ class Node(object):
         self.visited = 0
         self.reward = 0
 
+    def is_terminal(self):
+        pass
+
+    def is_fully_expanded(self):
+        pass
+
     def __repr__(self):
         return "{}(id={}, children={})".format(
             self.__class__.__name__,
@@ -31,14 +37,14 @@ class DecisionTurnNode(Node):
     def __init__(self, state, parent):
         super(DecisionTurnNode, self).__init__(state, parent)
 
-        self.actions = []
-        self.action = None
+        self.turns = []
+        self.turn = None
 
-    def is_leaf(self):
+    def is_terminal(self):
         return not self.children
 
     def is_fully_expanded(self):
-        return not self.actions
+        return not self.turns
 
     def __repr__(self):
         fmt_str = "Node(" \
@@ -57,6 +63,12 @@ class DrawCardNode(Node):
 
         self.possible_cards, self.probs = self._get_all_card_draws(state)
         self.children = [None] * len(self.possible_cards)
+
+    def is_terminal(self):
+        return False
+
+    def is_fully_expanded(self):
+        return self.children.count(None) == 0
 
     def choose_child(self):
         selected_card_idx = np.random.choice(

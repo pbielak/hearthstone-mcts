@@ -50,12 +50,19 @@ def main():
     # cnt_results = Counter(results)
     # print('#Wins:', cnt_results[1])
     # print('#Looses:', cnt_results[-1])
-    pass
+    gs = create_initial_game_state()
+    prepare_game(gs)
+
+    from mcts.node import DrawCardNode
+    dcn = DrawCardNode(gs)
+    for _ in range(100):
+        print(dcn)
+        dcn.choose_child()
 
 
 if __name__ == '__main__':
-    main_normal_game()
-    # main()
+    # main_normal_game()
+    main()
 
 
 # Zdefiniowanie gracza agresywnego, defensywnego

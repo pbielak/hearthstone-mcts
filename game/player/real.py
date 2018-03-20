@@ -14,6 +14,14 @@ class RealPlayer(base.BasePlayer):
     def play_turn(self, game_state):
         while True:
             # --- TODO REMOVE ---
+            from game import config
+            from game.gui import gui_preparer
+
+            if config.VERBOSE:
+                # Will double the gui output (but will show the state after
+                # each action of the RealPlayer)
+                print(gui_preparer.prepare_state(game_state))
+
             from pprint import pprint
             pprint(utils.get_possible_actions(game_state))
 
@@ -43,6 +51,8 @@ class RealPlayer(base.BasePlayer):
                 print('Unknown command!')
 
             utils.cleanup_all_dead_minions(game_state)
+            if game_state.is_terminal_state():
+                break
 
     def _play_spell(self, game_state):
         card_idx = get_card_to_use(self.cards, SpellCard)

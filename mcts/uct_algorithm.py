@@ -1,6 +1,5 @@
 """MCTS (UCT algorithm)"""
 import math
-import random
 
 from mcts.node import DecisionTurnNode, DrawCardNode
 from mcts.simulation import simulate_random_game as simulation
@@ -9,7 +8,9 @@ from mcts.turn import TurnGenerator
 
 
 class UCTSearchAlgorithm(object):
-    def __init__(self, calling_player_name, time_limit=30, coeff=math.sqrt(2)):
+    def __init__(self, calling_player_name,
+                 time_limit=30,
+                 coeff=1.0/math.sqrt(2)):
         self.calling_player_name = calling_player_name
         self.timer = utils.Timer(time_limit)
         self.coeff = coeff
@@ -33,7 +34,7 @@ class UCTSearchAlgorithm(object):
             print('Selected node:', node)
 
             reward = simulation(node.state)
-            print('Got reward:', reward)
+            print('Simulation - got reward:', reward)
 
             self.backpropagation(node, reward)
 

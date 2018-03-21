@@ -68,12 +68,6 @@ class TurnGenerator(object):
             turns.append(nth_level_turns)
             self.current_time = time.time()
 
-        print(
-            'Turn generation took:',
-            round(self.current_time - self.start_time, 5),
-            ' (s)'
-        )
-
         turns_flattened = [t for lvl_turn in turns for t in lvl_turn]
 
         # For all non-terminal states, update game_state step(!)
@@ -84,7 +78,7 @@ class TurnGenerator(object):
                 action.increment_mana(player)
                 player.already_used_mana = 0
 
-        return turns_flattened
+        return list(reversed(turns_flattened))
 
     def _create_initial_turns(self, game_state):
         turns = []

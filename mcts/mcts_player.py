@@ -45,9 +45,10 @@ class MCTSPlayer(base.BasePlayer):
             return
 
         alg = UCTSearchAlgorithm(calling_player_name=self.name,
-                                 time_limit=10)
-        turn = alg.run(deepcopy(game_state))
-        print('MCTS chose turn:', turn)
+                                 time_limit=30)
+        turn, expected_reward = alg.run(deepcopy(game_state))
+        print('MCTS chose turn (with expected reward:',
+              expected_reward, '):', turn)
 
         # Update game_state
         game_state.player_A = turn.game_state.player_A

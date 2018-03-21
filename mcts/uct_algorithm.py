@@ -31,14 +31,20 @@ class UCTSearchAlgorithm(object):
 
         while not self.stop_condition():
             node = self.select_node(root_node)
-            print('Selected node:', node)
+            if node.visited > 0:
+                print('Selected node:', node)
 
             reward = simulation(node.state)
-            print('Simulation - got reward:', reward)
+            #print('Simulation - got reward:', reward)
 
             self.backpropagation(node, reward)
 
-        return root_node.get_best_child(0).turn
+        print('Root node children:')
+        for c in root_node.children:
+            print(c.visited, c.reward)
+
+        best_child = root_node.get_best_child(0)
+        return best_child.turn, best_child.reward
 
     def select_node(self, root_node):
         node = root_node
@@ -68,7 +74,7 @@ class UCTSearchAlgorithm(object):
                 assert child_idx != -1
 
                 prob = current_node.probs[child_idx]
-                reward_update = prob * reward
+                reward_update = (-1) * prob * reward
 
             elif isinstance(current_node, DecisionTurnNode):
                 reward_update = reward

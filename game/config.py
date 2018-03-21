@@ -1,5 +1,5 @@
 """Common game configuration"""
-from game.player.agent.random import RandomAgent
+from game.player.agent import ControllingAgent, RandomAgent, AggressiveAgent
 from game.player.real import RealPlayer
 from mcts.mcts_player import MCTSPlayer
 

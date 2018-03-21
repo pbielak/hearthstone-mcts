@@ -26,7 +26,8 @@ def simulate_random_game(game_state):
         eng = engine.GameEngine(game_state_sim)
         winning_player = eng.run()
 
-    if winning_player.name == current_player.name:
+    from mcts.mcts_player import MCTSPlayer
+    if winning_player.name == MCTSPlayer.__name__:
         return 1
 
     return -1

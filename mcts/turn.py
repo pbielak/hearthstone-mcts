@@ -68,6 +68,10 @@ class TurnGenerator(object):
             turns.append(nth_level_turns)
             self.current_time = time.time()
 
+        #print('Max length generated turns:', len(turns))
+        if len(turns) >= 2:
+            turns = turns[1:]
+
         turns_flattened = [t for lvl_turn in turns for t in lvl_turn]
 
         # For all non-terminal states, update game_state step(!)

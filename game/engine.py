@@ -23,6 +23,10 @@ class GameEngine(object):
             player, _ = game_state_cpy.get_players()
             self.prepare_player(player, game_state_cpy)
 
+            if game_state_cpy.is_terminal_state():
+                self.game_state = game_state_cpy
+                break
+
             # Print current game_state
             #if config.VERBOSE:
             #    print(gui_preparer.prepare_state(game_state_cpy))

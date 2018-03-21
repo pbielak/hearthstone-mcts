@@ -99,9 +99,12 @@ class DrawCardNode(Node):
         return False
 
     def is_fully_expanded(self):
-        return self.children.count(None) == 0
+        return self.children.count(None) == 0 or (self.probs == [1.0] and self.possible_cards == [None])
 
     def expand(self, idx=None):
+        if self.probs == [1.0] and self.possible_cards == [None]:  # Is fully expanded!
+            return self.children[0]
+
         if idx is None:
             not_expanded_idx = -1
             for idx, elem in enumerate(self.children):
@@ -145,8 +148,10 @@ class DrawCardNode(Node):
             player.deck.no_attempt_pop_when_empty += 1
             player.health -= player.deck.no_attempt_pop_when_empty
 
+            turns = TurnGenerator().generate_all_turns(game_state_cpy)
             self.children = [DecisionTurnNode(state=game_state_cpy,
-                                              parent=self)]
+                                              parent=self,
+                                              turns=turns)]
             return
 
         nb_cards_in_deck = len(player.deck.cards)

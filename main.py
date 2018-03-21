@@ -9,7 +9,7 @@ from mcts.simulation import simulate_random_game
 
 def create_initial_game_state():
     player_A = utils.create_player_from_default_config(
-        config.PLAYER_A_CLS, 'PLAYER_A'
+        config.PLAYER_A_CLS, 'MCTSPlayer'
     )
     player_B = utils.create_player_from_default_config(
         config.PLAYER_B_CLS, 'PLAYER_B'

@@ -25,23 +25,27 @@ class UCTSearchAlgorithm(object):
         self.timer.start()
 
         turns = TurnGenerator().generate_all_turns(initial_state)
+
+        if len(turns) == 1:
+            return turns[0], None
+
         root_node = DecisionTurnNode(state=initial_state,
                                      parent=None,
                                      turns=turns)
 
         while not self.stop_condition():
             node = self.select_node(root_node)
-            if node.visited > 0:
-                print('Selected node:', node)
+            # if node.visited > 0:
+            #     print('Selected node:', node)
 
             reward = simulation(node.state)
             #print('Simulation - got reward:', reward)
 
             self.backpropagation(node, reward)
 
-        print('Root node children:')
-        for c in root_node.children:
-            print(c.visited, c.reward)
+        # print('Root node children:')
+        # for c in root_node.children:
+        #     print(c.visited, c.reward)
 
         best_child = root_node.get_best_child(0)
         return best_child.turn, best_child.reward

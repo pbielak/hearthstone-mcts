@@ -8,10 +8,10 @@ from mcts import stats
 
 def create_initial_game_state():
     player_A = utils.create_player_from_default_config(
-        config.PLAYER_A_CLS, 'PLAYER_A'
+        config.PLAYER_A_CLS, 'MCTSPlayer'
     )
     player_B = utils.create_player_from_default_config(
-        config.PLAYER_B_CLS, 'MCTSPlayer'
+        config.PLAYER_B_CLS, 'PLAYER_B'
     )
     curr_step = 0
 
@@ -50,8 +50,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main_normal_game()
-    #main()
+    # main_normal_game()
+    main()
 
 
 # Zdefiniowanie gracza agresywnego, defensywnego

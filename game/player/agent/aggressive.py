@@ -16,6 +16,7 @@ class AggressiveAgent(base.BasePlayer):
                                               cards, minions)
 
     def play_turn(self, game_state):
+        config.VERBOSE = True
         while True:
             possible_actions = pl_utils.get_possible_actions(game_state)
 

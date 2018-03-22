@@ -33,6 +33,9 @@ class UCTSearchAlgorithm(object):
                                      parent=None,
                                      turns=turns)
 
+        from mcts.stats import get_instance
+        stats = get_instance()
+
         while not self.stop_condition():
             node = self.select_node(root_node)
             # if node.visited > 0:
@@ -42,11 +45,14 @@ class UCTSearchAlgorithm(object):
             #print('Simulation - got reward:', reward)
 
             self.backpropagation(node, reward)
+            stats.commit_data()
+
 
         # print('Root node children:')
         # for c in root_node.children:
         #     print(c.visited, c.reward)
 
+        stats.clear()
         best_child = root_node.get_best_child(0)
         return best_child.turn, best_child.reward
 

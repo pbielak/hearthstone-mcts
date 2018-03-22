@@ -23,6 +23,12 @@ class Node(object):
         self.visited = 0
         self.reward = 0
 
+        self.depth = 0 if parent is None else parent.depth + 1
+
+        from mcts.stats import get_instance
+        stats = get_instance()
+        stats.push_node(self)
+
     def is_terminal(self):
         pass
 

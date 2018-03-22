@@ -30,10 +30,13 @@ class ControllingAgent(base.BasePlayer):
             # Check field
             # TODO: select best minion AND use spells!
             if possible_actions['minion_puts'] and \
-                            ag_utils.score_field(
-                                opponent) > ag_utils.score_field(player):
+                    ag_utils.score_field(
+                        opponent) > ag_utils.score_field(player):
                 ag_utils.perform_action(ControllingAgent,
                                         possible_actions['minion_puts'][0])
+
+                #  ag_utils.choose_best_action('controlling',
+                #  player, possible_actions['minion_puts'])
 
             else:
                 if possible_actions['minion_plays']:
@@ -58,4 +61,3 @@ class ControllingAgent(base.BasePlayer):
                                 ag_utils.perform_action(ControllingAgent, pa)
                                 pl_utils.cleanup_all_dead_minions(game_state)
                                 continue
-

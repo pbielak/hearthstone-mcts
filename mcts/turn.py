@@ -4,6 +4,7 @@ Turn generation for MCTS player
 from copy import deepcopy
 import time
 
+from game import action
 from game.player import utils as pl_utils
 
 
@@ -67,14 +68,21 @@ class TurnGenerator(object):
             turns.append(nth_level_turns)
             self.current_time = time.time()
 
-        print(
-            'Turn generation took:',
-            round(self.current_time - self.start_time, 5),
-            ' (s)'
-        )
+        #print('Max length generated turns:', len(turns))
+        if len(turns) >= 2:
+            turns = turns[1:]
 
         turns_flattened = [t for lvl_turn in turns for t in lvl_turn]
-        return turns_flattened
+
+        # For all non-terminal states, update game_state step(!)
+        for turn in turns_flattened:
+            if not turn.is_terminal:
+                turn.game_state.curr_step += 1
+                player, _ = turn.game_state.get_players()
+                action.increment_mana(player)
+                player.already_used_mana = 0
+
+        return list(reversed(turns_flattened))
 
     def _create_initial_turns(self, game_state):
         turns = []

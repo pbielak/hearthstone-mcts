@@ -20,7 +20,7 @@ class RandomAgent(base.BasePlayer):
         while True:
             possible_actions = pl_utils.get_possible_actions(game_state)
 
-            if possible_actions['no_actions']:
+            if possible_actions['no_actions'] or random.random() > 0.5:
                 if config.VERBOSE:
                     print(RandomAgent.__name__, 'chose END_TURN')
                 break

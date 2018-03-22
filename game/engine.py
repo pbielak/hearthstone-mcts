@@ -21,11 +21,15 @@ class GameEngine(object):
             game_state_cpy = deepcopy(self.game_state)
 
             player, _ = game_state_cpy.get_players()
-            game_state_cpy = self.prepare_player(player, game_state_cpy)
+            self.prepare_player(player, game_state_cpy)
+
+            if game_state_cpy.is_terminal_state():
+                self.game_state = game_state_cpy
+                break
 
             # Print current game_state
-            if config.VERBOSE:
-                print(gui_preparer.prepare_state(game_state_cpy))
+            #if config.VERBOSE:
+            #    print(gui_preparer.prepare_state(game_state_cpy))
 
             player.play_turn(game_state_cpy)
 
@@ -49,5 +53,3 @@ class GameEngine(object):
 
             if minion.side_effect is not None:
                 minion.side_effect(game_state, player, None)
-
-        return game_state

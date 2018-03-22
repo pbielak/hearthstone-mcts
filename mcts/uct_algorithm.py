@@ -1,84 +1,99 @@
 """MCTS (UCT algorithm)"""
-import random
-
 import math
 
-from mcts.node import Node
-
-C_P = None
-
-
-def run_uct_search(initial_state):
-    v0 = Node(initial_state)
-    while not stop_condition():
-        v = tree_policy(v0)
-        delta = default_policy(v.state)
-        backup(v, delta)
-
-    return best_child(v0, 0).action
+from mcts.node import DecisionTurnNode, DrawCardNode
+from mcts.simulation import simulate_random_game as simulation
+from mcts import utils
+from mcts.turn import TurnGenerator
 
 
-def stop_condition():
-    raise NotImplementedError()
+class UCTSearchAlgorithm(object):
+    def __init__(self, calling_player_name,
+                 time_limit=30,
+                 coeff=1.0/math.sqrt(2)):
+        self.calling_player_name = calling_player_name
+        self.timer = utils.Timer(time_limit)
+        self.coeff = coeff
+
+    def stop_condition(self):
+        return self.timer.time_limit_exceeded()
+
+    def run(self, initial_state):
+        """Gets INITIAL_STATE and
+        returns best TURN to take
+        in this state."""
+        self.timer.start()
+
+        turns = TurnGenerator().generate_all_turns(initial_state)
+
+        if len(turns) == 1:
+            return turns[0], None
+
+        root_node = DecisionTurnNode(state=initial_state,
+                                     parent=None,
+                                     turns=turns)
+
+        from mcts.stats import get_instance
+        stats = get_instance()
+
+        while not self.stop_condition():
+            node = self.select_node(root_node)
+            # if node.visited > 0:
+            #     print('Selected node:', node)
+
+            reward = simulation(node.state)
+            #print('Simulation - got reward:', reward)
+
+            self.backpropagation(node, reward)
+            stats.commit_data()
 
 
-def tree_policy(v):
-    while not v.is_leaf():
-        if not v.is_fully_expanded():
-            return expand(v)
-        else:
-            v = best_child(v, C_P)
+        # print('Root node children:')
+        # for c in root_node.children:
+        #     print(c.visited, c.reward)
 
-    return v
+        stats.clear()
+        best_child = root_node.get_best_child(0)
+        return best_child.turn, best_child.reward
 
+    def select_node(self, root_node):
+        node = root_node
+        while not node.is_terminal():
+            if not node.is_fully_expanded():
+                return node.expand()
+            else:
+                node = node.get_best_child(self.coeff)
 
-def expand(v):
-    action = random.choice(v.actions)
+        return node
 
-    state_p = simulation(v.state, action)
-    v_p = Node(state_p)
-    v_p.action = action
+    def backpropagation(self, node, reward):
+        prev_node = None
+        current_node = node
+        reward_update = 0
 
-    return v_p
+        while current_node is not None:
+            current_node.visited += 1
 
+            if isinstance(current_node, DrawCardNode):
+                # Find from which child we got here
+                child_idx = -1
+                for idx, child in enumerate(current_node.children):
+                    if child.id == prev_node.id:
+                        child_idx = idx
+                        break
+                assert child_idx != -1
 
-def simulation(state, action):
-    raise NotImplementedError()
+                prob = current_node.probs[child_idx]
+                reward_update = (-1) * prob * reward
 
+            elif isinstance(current_node, DecisionTurnNode):
+                reward_update = reward
 
-def best_child(v, c):
-    value = 0
-    child = None
-
-    for c in v.children:
-        curr_val = (c.reward / c.visited) + \
-                   c * math.sqrt(2 * math.log(v.visited) / c.visited)
-        if curr_val > value:
-            value = curr_val
-            child = c
-
-    return child
-
-
-def default_policy(s):
-    while not s.is_terminal_state():
-        action = random.choice(get_possible_actions(s))
-        s = simulation(s, action)
-
-    return calculate_reward(s)
-
-
-def get_possible_actions(state):
-    raise NotImplementedError()
-
-
-def calculate_reward(state):
-    raise NotImplementedError()
-
-
-def backup(v, delta):
-    while v is not None:
-        v.visited += 1
-        v.reward += delta
-        delta *= -1
-        v = v.parent
+            # Based on player assigned to node game_state,
+            # update properly reward
+            current_player, _ = current_node.state.get_players()
+            if self.calling_player_name == current_player.name:
+                current_node.reward += reward_update
+            else:
+                current_node.reward -= reward_update
+            prev_node, current_node = current_node, current_node.parent

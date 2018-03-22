@@ -3,17 +3,15 @@ from game import config
 from game import engine
 from game.player import utils
 from game import state
+from mcts import stats
+from game.player.agent import ControllingAgent, RandomAgent, AggressiveAgent
+from mcts.mcts_player import MCTSPlayer
+import traceback
 
-from mcts.simulation import simulate_random_game
 
-
-def create_initial_game_state():
-    player_A = utils.create_player_from_default_config(
-        config.PLAYER_A_CLS, 'Pyjter'
-    )
-    player_B = utils.create_player_from_default_config(
-        config.PLAYER_B_CLS, 'Mati'
-    )
+def create_initial_game_state(clsA, nameA, clsB, nameB):
+    player_A = utils.create_player_from_default_config(clsA, nameA)
+    player_B = utils.create_player_from_default_config(clsB, nameB)
     curr_step = 0
 
     return state.GameState(player_A, player_B, curr_step)
@@ -32,30 +30,46 @@ def main_normal_game():
     prepare_game(gs)
 
     eng = engine.GameEngine(gs)
-    eng.run()
+    winning_player = eng.run()
+    print(winning_player.__class__.__name__, 'won the game!')
 
 
 def main():
-    # results = []
-    #
-    # for i in range(1000):
-    #     print(i)
-    #     gs = create_initial_game_state()
-    #     prepare_game(gs)
-    #
-    #     sim_result = simulate_random_game(gs)
-    #     results.append(sim_result)
-    #
-    # from collections import Counter
-    # cnt_results = Counter(results)
-    # print('#Wins:', cnt_results[1])
-    # print('#Looses:', cnt_results[-1])
-    pass
+    confs = [
+        (MCTSPlayer, 'MCTSPlayer', AggressiveAgent, 'AggressiveAgent'),
+        (AggressiveAgent, 'AggressiveAgent', MCTSPlayer, 'MCTSPlayer'),
+
+        (MCTSPlayer, 'MCTSPlayer', ControllingAgent, 'ControllingAgent'),
+        (ControllingAgent, 'ControllingAgent', MCTSPlayer, 'MCTSPlayer'),
+
+    ]
+    for clsA, nameA, clsB, nameB in confs:
+        for i in range(10):
+            stats.instance = stats.StatsCounter(
+                filename='stats_{}_{}_{}.txt'.format(
+                    clsA.__name__, clsB.__name__, i + 1
+                )
+            )
+            try:
+                gs = create_initial_game_state(clsA, nameA, clsB, nameB)
+                prepare_game(gs)
+
+                eng = engine.GameEngine(gs)
+                winning_player = eng.run()
+                print(winning_player.__class__.__name__, 'won the game!')
+
+            except KeyboardInterrupt:
+                import sys
+                sys.exit(0)
+            except Exception as ex:
+                print(traceback.format_exc())
+                print('Exception occurred')
+                continue
 
 
 if __name__ == '__main__':
-    main_normal_game()
-    # main()
+    # main_normal_game()
+    main()
 
 
 # Zdefiniowanie gracza agresywnego, defensywnego

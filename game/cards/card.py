@@ -31,10 +31,13 @@ class SpellCard(Card):
         * effect (func: (GameState, Player, Player/Minion) -> GameState):
                 effect of the card
     """
-    def __init__(self, name, cost, effect):
+    def __init__(self, name, cost, effect, aggressive_rate=0,
+                 controlling_rate=0):
         self.name = name
         self.cost = cost
         self.effect = effect
+        self.aggressive_rate = aggressive_rate
+        self.controlling_rate = controlling_rate
 
     def apply(self, game_state, source, target):
         self.effect(game_state, source, target)
@@ -71,13 +74,16 @@ class MinionCard(Card):
         * side-effect (func: (GameState, Player, Player/Minion) -> GameState):
             optional side effect
     """
-    def __init__(self, name, health, attack, cost, side_effect=None):
+    def __init__(self, name, health, attack, cost, side_effect=None,
+                 aggressive_rate=0, controlling_rate=0):
         self.name = name
         self.health = health
         self.attack = attack
         self.cost = cost
         self.side_effect = side_effect
         self.can_attack = True
+        self.aggressive_rate = aggressive_rate
+        self.controlling_rate = controlling_rate
 
     def apply(self, game_state, source, target):
         from game.player.base import BasePlayer  # Fix import-cycles

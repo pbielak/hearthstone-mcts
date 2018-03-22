@@ -17,6 +17,10 @@ class ControllingAgent(base.BasePlayer):
                                                cards, minions)
 
     def play_turn(self, game_state):
+        config.VERBOSE = True
+
+        # ------------- Check field ----------------
+        print('ControllingAgent check field')
         while True:
             possible_actions = pl_utils.get_possible_actions(game_state)
 
@@ -27,37 +31,69 @@ class ControllingAgent(base.BasePlayer):
 
             player, opponent = game_state.get_players()
 
-            # Check field
-            # TODO: select best minion AND use spells!
-            if possible_actions['minion_puts'] and \
-                    ag_utils.score_field(
-                        opponent) > ag_utils.score_field(player):
-                ag_utils.perform_action(ControllingAgent,
-                                        possible_actions['minion_puts'][0])
+            minion_minion_actions = []
+            for pa in possible_actions['minion_plays']:
+                _, args = pa
+                _, target_idx, _ = args
+                if target_idx != -1:
+                    minion_minion_actions.append(pa)
 
-                #  ag_utils.choose_best_action('controlling',
-                #  player, possible_actions['minion_puts'])
+            actions = [*possible_actions['minion_puts'],
+                       *possible_actions['spell_plays'],
+                       *minion_minion_actions]
 
+            if actions and ag_utils.score_field(opponent) >= ag_utils.score_field(player):
+                best_action = ag_utils.get_best_action(
+                    actions,
+                    lambda a: ag_utils.action_to_card(a, player).controlling_rate)
+
+                ag_utils.perform_action(ControllingAgent, best_action)
             else:
-                if possible_actions['minion_plays']:
-                    # Try to attack enemy hero, if no enemy minions
-                    if not opponent.minions:
-                        for pa in possible_actions['minion_plays']:
-                            func, args = pa
-                            _, _, target_idx, _ = args
-                            if target_idx == -1:  # -1 means opponent hero
-                                ag_utils.perform_action(ControllingAgent, pa)
+                if config.VERBOSE:
+                    print(ControllingAgent.__name__, 'chose END_TURN')
+                break
+
+        # ------------- Attack -----------------
+        print('ControllingAgent attack')
+        while True:
+            possible_actions = pl_utils.get_possible_actions(game_state)
+
+            if possible_actions['no_actions']:
+                if config.VERBOSE:
+                    print(ControllingAgent.__name__, 'chose END_TURN')
+                break
+
+            player, opponent = game_state.get_players()
+
+            actions = possible_actions['minion_plays']
+
+            if actions:
+                # Try to attack enemy hero, if no enemy minions
+                if not opponent.minions:
+                    for pa in actions:
+                        func, args = pa
+                        _, target_idx, _ = args
+                        if target_idx == -1:  # -1 means opponent hero
+                            ag_utils.perform_action(ControllingAgent, pa)
 
                             # If enemy died end the turn (and game)
                             if opponent.is_dead():
                                 return
 
-                    # There are enemy minions
-                    else:
-                        for pa in possible_actions['minion_plays']:
-                            func, args = pa
-                            _, _, target_idx, _ = args
-                            if target_idx != -1:
-                                ag_utils.perform_action(ControllingAgent, pa)
-                                pl_utils.cleanup_all_dead_minions(game_state)
-                                continue
+                            break
+
+                # There are enemy minions
+                else:
+                    for pa in actions:
+                        func, args = pa
+                        _, target_idx, _ = args
+                        if target_idx != -1:
+                            ag_utils.perform_action(ControllingAgent, pa)
+                            pl_utils.cleanup_all_dead_minions(game_state)
+                            break
+            else:
+                if config.VERBOSE:
+                    print(ControllingAgent.__name__, 'chose END_TURN')
+                break
+
+        pl_utils.cleanup_all_dead_minions(game_state)

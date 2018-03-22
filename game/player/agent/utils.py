@@ -19,24 +19,20 @@ def perform_action(cls, chosen_action):
         print(cls.__name__, 'chose', chosen_action)
 
 
-def choose_best_action(mode, player, possible_actions):
+def get_best_action(actions, action_score_fn):
     best_action = None
+    best_action_score = -99999
 
-    for action in possible_actions:
-
-        if best_action is None:
+    for action in actions:
+        curr_score = action_score_fn(action)
+        if curr_score > best_action_score:
             best_action = action
-        else:
-            _, current_action_args = action
-            _, best_action_args = best_action
-
-            if mode == 'controlling':
-                if player.cards[current_action_args[0]].controlling > \
-                        player.cards[best_action_args[0]].controlling:
-                    best_action = action
-            elif mode == 'aggressive':
-                if player.cards[current_action_args[0]].aggresive > \
-                        player.cards[best_action_args[0]].aggresive:
-                    best_action = action
+            best_action_score = curr_score
 
     return best_action
+
+
+def action_to_card(action, player):
+    _, args = action
+    card_idx = args[0]
+    return player.cards[card_idx]

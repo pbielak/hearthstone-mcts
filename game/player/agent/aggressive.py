@@ -30,7 +30,7 @@ class AggressiveAgent(base.BasePlayer):
             if possible_actions['minion_plays']:
                 for pa in possible_actions['minion_plays']:
                     func, args = pa
-                    _, _, target_idx, _ = args
+                    _, target_idx, _ = args
                     if target_idx == -1:  # -1 means opponent hero
                         ag_utils.perform_action(AggressiveAgent, pa)
 
@@ -38,14 +38,20 @@ class AggressiveAgent(base.BasePlayer):
                     if opponent.is_dead():
                         return
 
+            actions = [*possible_actions['minion_puts'],
+                       *possible_actions['spell_plays']]
+
             # Check field
-            # TODO: select best minion AND use spells!
-            if possible_actions['minion_puts'] and \
-                    ag_utils.score_field(opponent) > ag_utils.score_field(player):
-                ag_utils.perform_action(AggressiveAgent,
-                                        possible_actions['minion_puts'][0])
+            if actions:
+                if ag_utils.score_field(opponent) > ag_utils.score_field(player):
 
-                #  ag_utils.choose_best_action('aggressive',
-                #  player, possible_actions['minion_puts'])
+                    best_action = ag_utils.get_best_action(
+                        actions,
+                        lambda a: ag_utils.action_to_card(a, player).aggressive_rate)
 
-            pl_utils.cleanup_all_dead_minions(game_state)
+                    ag_utils.perform_action(AggressiveAgent, best_action)
+                    pl_utils.cleanup_all_dead_minions(game_state)
+                else:
+                    if config.VERBOSE:
+                        print(AggressiveAgent.__name__, 'chose END_TURN')
+                    break

@@ -8,10 +8,10 @@ from mcts import stats
 
 def create_initial_game_state():
     player_A = utils.create_player_from_default_config(
-        config.PLAYER_A_CLS, 'MCTSPlayer'
+        config.PLAYER_A_CLS, 'PLAYER_A'
     )
     player_B = utils.create_player_from_default_config(
-        config.PLAYER_B_CLS, 'PLAYER_B'
+        config.PLAYER_B_CLS, 'MCTSPlayer'
     )
     curr_step = 0
 

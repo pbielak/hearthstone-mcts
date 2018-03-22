@@ -4,15 +4,14 @@ from game import engine
 from game.player import utils
 from game import state
 from mcts import stats
+from game.player.agent import ControllingAgent, RandomAgent, AggressiveAgent
+from mcts.mcts_player import MCTSPlayer
+import traceback
 
 
-def create_initial_game_state():
-    player_A = utils.create_player_from_default_config(
-        config.PLAYER_A_CLS, 'MCTSPlayer'
-    )
-    player_B = utils.create_player_from_default_config(
-        config.PLAYER_B_CLS, 'PLAYER_B'
-    )
+def create_initial_game_state(clsA, nameA, clsB, nameB):
+    player_A = utils.create_player_from_default_config(clsA, nameA)
+    player_B = utils.create_player_from_default_config(clsB, nameB)
     curr_step = 0
 
     return state.GameState(player_A, player_B, curr_step)
@@ -36,22 +35,41 @@ def main_normal_game():
 
 
 def main():
-    for i in range(10):
-        stats.instance = stats.StatsCounter(
-            filename='stats_{}_{}_{}.txt'.format(
-                config.PLAYER_A_CLS.__name__, config.PLAYER_B_CLS.__name__, i + 1
+    confs = [
+        (MCTSPlayer, 'MCTSPlayer', AggressiveAgent, 'AggressiveAgent'),
+        (AggressiveAgent, 'AggressiveAgent', MCTSPlayer, 'MCTSPlayer'),
+
+        (MCTSPlayer, 'MCTSPlayer', ControllingAgent, 'ControllingAgent'),
+        (ControllingAgent, 'ControllingAgent', MCTSPlayer, 'MCTSPlayer'),
+
+    ]
+    for clsA, nameA, clsB, nameB in confs:
+        for i in range(10):
+            stats.instance = stats.StatsCounter(
+                filename='stats_{}_{}_{}.txt'.format(
+                    clsA.__name__, clsB.__name__, i + 1
+                )
             )
-        )
-        try:
-            main_normal_game()
-        except:
-            print('Exception occurred')
-            continue
+            try:
+                gs = create_initial_game_state(clsA, nameA, clsB, nameB)
+                prepare_game(gs)
+
+                eng = engine.GameEngine(gs)
+                winning_player = eng.run()
+                print(winning_player.__class__.__name__, 'won the game!')
+
+            except KeyboardInterrupt:
+                import sys
+                sys.exit(0)
+            except Exception as ex:
+                print(traceback.format_exc())
+                print('Exception occurred')
+                continue
 
 
 if __name__ == '__main__':
-    main_normal_game()
-    # main()
+    # main_normal_game()
+    main()
 
 
 # Zdefiniowanie gracza agresywnego, defensywnego

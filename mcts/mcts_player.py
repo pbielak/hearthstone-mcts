@@ -41,7 +41,7 @@ class MCTSPlayer(base.BasePlayer):
             return
 
         alg = UCTSearchAlgorithm(calling_player_name=self.name,
-                                 time_limit=30)
+                                 time_limit=60)
         turn, expected_reward = alg.run(deepcopy(game_state))
 
         if turn is None:

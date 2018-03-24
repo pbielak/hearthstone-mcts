@@ -1,2 +1,23 @@
 \pagebreak
 \section{Podsumowanie}
+  \begin{itemize}
+    \item{Podczas rozgrywek z agentem losowym, algorytm MCTS był w stanie wygrać 70 \% rozgrywek, w przypadku gdy rozpoczynał grę 
+          oraz 50 \% rozgrywek, gdy agent rozpoczynał.}
+    \item{Najlepsze wyniki osiągał algorytm MCTS w pojedynku z agentem kontrolującym -- był w stanie wygrać 80 \% oraz 100 \% 
+          rozgrywek, gdy odpowiednio rozpoczynał grę oraz gdy agent rozpoczynał.}
+    \item{Z kolei najgorzej sobie radził algorytm MCTS z agentem agresywnym. Wygrywał tylko pojedyncze gry, co przełożyło się na
+          następujący wynik: 90 \% przegranych w przypadku rozpoczynania gry oraz 100 \% przegranych w przeciwnym przypadku.}
+    \item{Parametrem, który wpływał na jakość osiąganych wyników, był limit czasowy nakładany na czas działania algorytmu / 
+          podejmowanie decyzji w ramach pojedynczej tury. Im większy czas, tym więcej symulacji można przeprowadzić. Należy
+          jednak pamiętać, aby nie ustawić zbyt wysokiej wartości, ponieważ to bezpośrednio wpływa na długość całej rozgrywki.
+          Należało zatem dobrać parametr tak, aby przeprowadzić eksperyment w rozsądnym czasie.}
+    \item{W przypadku części wykresów, można zauważyć niską liczbę przeprowadzonych symulacji (pojedyncze kropki). Wynika to
+          z faktu, że dla części stanów gry istnieje duża licza możliwych ruchów i czas ich wyznaczania jest dość wysoki. Im więcej
+          zatem czasu zostanie przeznaczone na generowanie ruchów, tym mniej kroków algorytmu można przeprowadzić.}
+    \item{W celu uniknięcia sytuacji, w której algorytm nie może wykonać pojedynczego przebiegu ze względu na czas generowania
+          dostępnych ruchów, został nałożony 5 sekundowy limit czasowy.}
+    \item{Często również można zaobserwować, że maksymalna, średnia oraz mediana głębokości liści osiągają tę samą wartość (równą 2).
+          Następuje to w sytuacji, w której z aktualnego stanu gry można doprowadzić do zakończenia gry (zabicia jednego z graczy).
+          Pomimo takiej możliwości algorytm MCTS nie zawsze podejmuje decyzje, które kończą rozgrywkę (może to wynikać z dużej liczby
+          możliwych ruchów i braku czasu na ich zbadanie / przejrzenie).}
+  \end{itemize}

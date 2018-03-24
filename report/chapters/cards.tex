@@ -1,2 +1,72 @@
 \pagebreak
 \section{Karty}
+
+Poniżej wymienione zostały karty, które użyto przy implementacji gry. Każda składa się z atrybutów:
+
+\begin{itemize}
+	\item nazwa,
+	\item koszt,
+	\item wskaźnik kontrolowania,
+	\item wskaźnik agresywności.
+\end{itemize}
+
+Dodatkowo karty minionów zawierają pola takie jak:
+
+\begin{itemize}
+	\item zdrowie,
+	\item atak,
+	\item efekt uboczny (w niektórych kartach go nie ma).
+\end{itemize}
+
+Karty czarów mają jedno dodatkowe pole: efekt.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+		\textbf{Nazwa karty} & \textbf{Koszt} & \textbf{Zdrowie} & \textbf{Atak} & \textbf{W. kontrolowania} & \textbf{W. agresywności} \\
+		\hline
+		Enchanted Raven & 1 & 2 & 2 & 2 & 2 \\
+		\hline
+		Spider Tank & 3 & 4 & 3 & 4 & 3 \\
+		\hline
+		Ice Rager & 3 & 2 & 5 & 2 & 5 \\
+		\hline
+		Worgen Greaser & 4 & 3 & 6 & 3 & 6 \\
+		\hline
+		Am'gam Rager & 3 & 5 & 1 & 5 & 1 \\
+		\hline
+	\end{tabular}
+	\caption{Lista kart minionów, bez efektów ubocznych.}
+\end{table}
+
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|c|}
+		\hline
+		\textbf{Nazwa karty} & \textbf{Koszt} & \textbf{Zdrowie} & \textbf{Atak} & \textbf{W. kontr.} & \textbf{W. agr.} & \textbf{Efekt uboczny} \\
+		\hline
+		Cult Apothecary & 5 & 4 & 4 & 4 & 4 & restore\_health\_for\_minions \\
+		\hline
+		Eadric the Pure & 7 & 7 & 3 & 7 & 3 & reduce\_enemy\_minions\_attack\_points \\
+		\hline
+	\end{tabular}
+		\caption{Lista kart minionów, z ubocznych.}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		\textbf{Nazwa karty} & \textbf{Koszt} & \textbf{W. kontrolowania} & \textbf{W. agresywności} & \textbf{Efekt} \\
+		\hline
+		Flamestrike & 7 & 5 & 5 & deal\_damage\_to\_enemy\_minions \\
+		\hline
+		Sprint & 7 & 0 & 0 & draw\_cards \\
+		\hline
+		Consecration & 4 & 7 & 7 & deal\_damage\_to\_all\_enemies \\
+		\hline
+	\end{tabular}
+		\caption{Lista kart czarów.}
+\end{table}

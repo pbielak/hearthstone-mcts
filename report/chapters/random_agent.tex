@@ -1,6 +1,9 @@
 \subsection{Agent losowy}
 
-\begin{minted}{python}
+Działanie agenta losowego jest bardzo proste -- przy każdym jego ruchu pobierana jest lista akcji, które może wykonać (z uwzględnieniem stanu gry). Po tym wybierana jest losowa akcja, która modyfikuje obecny stan gry. Gdy już nie będzie możliwe wykonanie żadnej akcji, ruch zostanie zakończony.
+
+\begin{figure}[H]
+	\begin{minted}{python}
 def play_turn():
 	while True:
 		possible_actions = get_possible_actions()
@@ -11,3 +14,4 @@ def play_turn():
 		chosen_action = random_action(possible_actions)
 		perform_action(chosen_action)
 \end{minted}
+\end{figure}

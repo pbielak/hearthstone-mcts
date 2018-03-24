@@ -1,6 +1,9 @@
 \subsection{Agent kontrolujący}
 
-\begin{minted}{python}
+W pierwszym etapie tury agenta kontrolującego wybierana jest najlepsza akcja ze zbioru: rzucania czarów, ustawiania minionów oraz atakowania przez nich. Najlepszy ruch dokonywany jest w kontekście zwiększenia wartości oceny pola tego agenta względem tego wskazania dla przeciwnika. Akcje są wykonywane do momentu wykorzystania puli ruchów wspomnianych typów. Po wykonaniu ruchów, polepszających wartość pola względem przeciwnika, wykonywane są akcje, których celem jest atak na miniony przeciwnika lub niego samego.
+
+\begin{figure}[H]
+	\begin{minted}{python}
 def play_turn():
 	# Checking field
 	while True:
@@ -39,4 +42,5 @@ def play_turn():
 			actions = get_minion_to_minion_attacks(minion_plays):
 			perform_action(actions[0])
 			
-\end{minted}
+	\end{minted}
+\end{figure}

@@ -1,2 +1,26 @@
 \pagebreak
 \section{Badania}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+		\multirow{2}{*}{\textbf{Gracz 1}} & \multirow{2}{*}{\textbf{Gracz 2}} & \multicolumn{2}{|c|}{\textbf{Wygrane}} & \multicolumn{2}{|c|}{\textbf{Przegrane}} \\
+		\cline{3-6}
+		& & \textbf{\%} & \textbf{Czas [s]} & \textbf{\%} & \textbf{Czas [s]} \\
+		\hline
+		Agresywny & MCTS & 0 & -- & 100 & 481 \\
+		\hline
+		MCTS & Agresywny & 10 & 541 & 90 & 300  \\
+		\hline \hline
+		Kontrolujący & MCTS & 100 & 780 & 0 & --  \\
+		\hline
+		MCTS & Kontrolujący & 80 & 663 & 20 & 720 \\
+		\hline \hline
+		Losowy & MCTS & 50 & 393 & 50 & 434 \\
+		\hline
+		MCTS & Losowy & 70 & 120 & 30 & 393 \\ 
+		\hline
+	\end{tabular}
+	\caption{Zestawienie wyników badań.}
+\end{table}

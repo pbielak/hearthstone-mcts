@@ -1,7 +1,7 @@
 \pagebreak
 \section{Karty}
 
-Poniżej wymienione zostały karty, które użyto przy implementacji gry. Każda składa się z atrybutów:
+Każda z kart, które wykorzystana została przy implementacji gry, posiada następujące atrybuty:
 
 \begin{itemize}
 	\item nazwa,
@@ -10,15 +10,18 @@ Poniżej wymienione zostały karty, które użyto przy implementacji gry. Każda
 	\item wskaźnik agresywności.
 \end{itemize}
 
-Dodatkowo karty minionów zawierają pola takie jak:
+Karty stronników oraz magiczne posiadają dodatkowe pola, która zostaną opisane w dalszej części sprawozdania.
+
+\subsection{Stronnicy}
+
+Karty stronników zawierają dodatkowe pola, takie jak:
 
 \begin{itemize}
 	\item zdrowie,
-	\item atak,
-	\item efekt uboczny (w niektórych kartach go nie ma).
+	\item atak.
 \end{itemize}
 
-Karty czarów mają jedno dodatkowe pole: efekt.
+Niektóre z kart stronników zawierają dodatkowy atrybut: efekt uboczny. Informuje on o tym, jaki efekt pojawia się po umieszczeniu karty danego stronnika na polu gracza. Karty stronników mogą zostać wykorzystane przeciwko przeciwnikowi oraz jego stronnikom.
 
 \begin{table}[H]
 	\centering
@@ -37,7 +40,7 @@ Karty czarów mają jedno dodatkowe pole: efekt.
 		Am'gam Rager & 3 & 5 & 1 & 5 & 1 \\
 		\hline
 	\end{tabular}
-	\caption{Lista kart minionów, bez efektów ubocznych.}
+	\caption{Lista kart stronników, bez efektów ubocznych.}
 \end{table}
 
 
@@ -52,8 +55,19 @@ Karty czarów mają jedno dodatkowe pole: efekt.
 		Eadric the Pure & 7 & 7 & 3 & 7 & 3 & reduce\_enemy\_minions\_attack\_points \\
 		\hline
 	\end{tabular}
-		\caption{Lista kart minionów, z ubocznych.}
+	\caption{Lista kart stronników, z efektami ubocznymi.}
 \end{table}
+
+Opis efektów ubocznych:
+
+\begin{itemize}
+	\item restore\_health\_for\_minions -- ...
+	\item reduce\_enemy\_minions\_attack\_points -- ...
+\end{itemize}
+
+\subsection{Czary}
+
+Karty czarów mają jedno dodatkowe pole: efekt. Działa on podobnie jak efekt uboczny w kartach stronników, należy jednak pamiętać, że karta czaru jest zagrywana natychmiastowo po wybraniu, po czym znika z gry. Ten typ kart może zostać użyty jedynie dla całej gry. Nie ma możliwości wyboru celu, tak jak w poprzednim typie kart.
 
 \begin{table}[H]
 	\centering
@@ -63,10 +77,18 @@ Karty czarów mają jedno dodatkowe pole: efekt.
 		\hline
 		Flamestrike & 7 & 5 & 5 & deal\_damage\_to\_enemy\_minions \\
 		\hline
-		Sprint & 7 & 0 & 0 & draw\_cards \\
+		Sprint & 7 & 7 & 7 & draw\_cards \\
 		\hline
 		Consecration & 4 & 7 & 7 & deal\_damage\_to\_all\_enemies \\
 		\hline
 	\end{tabular}
 		\caption{Lista kart czarów.}
 \end{table}
+
+Opis efektów
+
+\begin{itemize}
+	\item deal\_damage\_to\_enemy\_minions -- ...
+	\item draw\_cards -- ...
+	\item deal\_damage\_to\_all\_enemies -- ...
+\end{itemize}

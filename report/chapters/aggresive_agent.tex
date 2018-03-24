@@ -1,6 +1,6 @@
 \subsection{Agent agresywny}
 
-Celem agenta agresywnego jest maksymalizacja obrażeń zadawanych przeciwnikowi. W pierwszym etapie tury tego agenta aplikowane są wszystkie ruchy atakujące przeciwnika. Gdy nie to już możliwe, podejmowana jest próba kontroli pola gry, w momencie gdy jego ocena agenta jest gorsza niż wskazanie dla stanu planszy przeciwnika -- wybierana jest najlepsza akcja ze zbioru rzucania czarów oraz układania minionów na planszy. Kryterium wybrania najlepszej akcji to parametr \emph{aggressive\_rate}, zdefiniowany dla każdej karty, natomiast ocena pola gry oparta jest liczbę punktów życia oraz ataku dla każdego z minionów, znajdującego się na polu gry danego gracza.
+Celem agenta agresywnego jest maksymalizacja obrażeń zadawanych przeciwnikowi. W pierwszej kolejności aplikowane są wszystkie ruchy atakujące przeciwnika. Następnie podejmowana jest próba kontroli pola gry, pod warunkiem, że ocena pola gry agenta jest gorsza niż ocena dla stanu planszy przeciwnika -- wybierana jest najlepsza akcja ze zbioru rzucania czarów oraz układania minionów na planszy. Kryterium wybrania najlepszej akcji to parametr \emph{aggressive\_rate}, zdefiniowany dla każdej karty, natomiast ocena pola gry oparta jest liczbę punktów życia oraz ataku dla każdego z minionów, znajdującego się na polu gry danego gracza.
 
 \begin{figure}[H]
 	\begin{minted}{python}
@@ -33,4 +33,5 @@ def play_turn():
 			else:
 				end_turn()
 	\end{minted}
+	\caption{Pseudokod działania agenta agresywnego.}
 \end{figure}

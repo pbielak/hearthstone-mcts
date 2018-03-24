@@ -1,6 +1,8 @@
 \subsection{Agent kontrolujący}
 
-W pierwszym etapie tury agenta kontrolującego wybierana jest najlepsza akcja ze zbioru: rzucania czarów, ustawiania minionów oraz atakowania przez nich. Najlepszy ruch dokonywany jest w kontekście zwiększenia wartości oceny pola tego agenta względem tego wskazania dla przeciwnika. Akcje są wykonywane do momentu wykorzystania puli ruchów wspomnianych typów. Po wykonaniu ruchów, polepszających wartość pola względem przeciwnika, wykonywane są akcje, których celem jest atak na miniony przeciwnika lub niego samego.
+W pierwszym etapie tury agenta kontrolującego wybierane są akcje ze zbiorów: rzucania czarów, ustawiania stronników oraz atakowania przez nich stronników przeciwnika. Mają one na celu uzyskanie lepszego pola gry niż przeciwnik i wybierane są w kolejności określonej przez parametr \emph{controlling\_rate}. Akcje są wykonywane do momentu wykorzystania puli ruchów wspomnianych wcześniej typów lub uzyskania lepszego pola. 
+
+\noindent Kolejnym etapem tury agenta jest wykonywanie akcji, których celem jest atak na stronników przeciwnika lub niego samego, gdy nie ma on żadnych stronników.
 
 \begin{figure}[H]
 	\begin{minted}{python}
@@ -21,8 +23,10 @@ def play_turn():
 			if score_field(enemy) >= score_field(agent):
 				best_action = choose_best_action(checking_field_actions)
 				perform_action(best_action)
+			else:
+				break
 		else:
-			end_turn()
+			break
 			
 	# Attacking
 	while True:
@@ -43,4 +47,5 @@ def play_turn():
 			perform_action(actions[0])
 			
 	\end{minted}
+	\caption{Pseudokod działania agenta kontrolującego.}
 \end{figure}

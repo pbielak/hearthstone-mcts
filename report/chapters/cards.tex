@@ -61,8 +61,8 @@ Niektóre z kart stronników zawierają dodatkowy atrybut: efekt uboczny. Inform
 Opis efektów ubocznych:
 
 \begin{itemize}
-	\item restore\_health\_for\_minions -- ...
-	\item reduce\_enemy\_minions\_attack\_points -- ...
+	\item \textbf{restore\_health\_for\_minions} -- graczowi, który umieszcza kartę stronnika, przywracane są punkty zdrowia. Wartość o jaką zwiększany jest stan zdrowia to wynik przemnożenia liczby stronników przeciwników przez 2. Wartość punktów zdrowia po aktualizacji nie będzie większa niż maksymalny poziom punktów zdrowia (domyślnie 20);
+	\item \textbf{reduce\_enemy\_minions\_attack\_points} -- zmniejsza siłę ataków wszystkich stronników przeciwnika do wartości 1.
 \end{itemize}
 
 \subsection{Czary}
@@ -85,10 +85,10 @@ Karty czarów mają jedno dodatkowe pole: efekt. Działa on podobnie jak efekt u
 		\caption{Lista kart czarów.}
 \end{table}
 
-Opis efektów
+Opis efektów:
 
 \begin{itemize}
-	\item deal\_damage\_to\_enemy\_minions -- ...
-	\item draw\_cards -- ...
-	\item deal\_damage\_to\_all\_enemies -- ...
+	\item \textbf{deal\_damage\_to\_enemy\_minions} -- każdy ze stronników przeciwnika otrzymuje obrażenia w postaci odjęcia 2 punktów zdrowia. Gdy liczba punktów zdrowia będzie równa lub mniejsza od 0, stronnik przeciwnika zostaje usunięty z gry;
+	\item \textbf{draw\_cards} -- z talii kart aktualnego gracza dociągane są 4 karty. W przypadku, gdy w talii nie ma już kart, gracz traci liczbę punktów równoważną liczbie prób pociągnięcia kart z pustej talii;
+	\item \textbf{deal\_damage\_to\_all\_enemies} -- każdy stronnik przeciwnika oraz on sam traci 2 punkty zdrowia.
 \end{itemize}

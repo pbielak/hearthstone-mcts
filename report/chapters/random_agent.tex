@@ -1,0 +1,13 @@
+\subsection{Agent losowy}
+
+\begin{minted}{python}
+def play_turn():
+	while True:
+		possible_actions = get_possible_actions()
+		
+		if empty(possible_actions) or random_probability > 0.5:
+			end_turn()
+	
+		chosen_action = random_action(possible_actions)
+		perform_action(chosen_action)
+\end{minted}

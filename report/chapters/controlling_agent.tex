@@ -1,0 +1,42 @@
+\subsection{Agent kontrolujący}
+
+\begin{minted}{python}
+def play_turn():
+	# Checking field
+	while True:
+		possible_actions = get_possible_actions()
+		
+		if empty(possible_actions):
+			end_turn()
+	
+		minion_minion_attacks = get_minion_to_minion_attacks(possible_actions)
+		spell_plays = get_play_spells(possible_actions)
+		minion_puts = get_minion_puts(possible_actions)
+		
+		checking_field_actions = (minion_minion_attacks, spell_plays, minion_puts)
+		if not_empty(checking_field_actions):
+			if score_field(enemy) >= score_field(agent):
+				best_action = choose_best_action(checking_field_actions)
+				perform_action(best_action)
+		else:
+			end_turn()
+			
+	# Attacking
+	while True:
+		minion_plays = get_minion_attacks(get_possible_actions())
+		
+		if empty(minion_plays):
+			end_turn()
+	
+		if has_not_any_minions_on_field(enemy):
+			for action in get_minion_to_enemy_attacks(minion_plays):
+				perform_action(action)
+			
+				if is_dead(enemy):
+					end_turn()
+					
+		else:
+			actions = get_minion_to_minion_attacks(minion_plays):
+			perform_action(actions[0])
+			
+\end{minted}

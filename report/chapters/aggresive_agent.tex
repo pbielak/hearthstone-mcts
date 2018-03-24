@@ -1,0 +1,32 @@
+\subsection{Agent agresywny}
+
+\begin{minted}{python}
+def play_turn():
+	while True:
+		possible_actions = get_possible_actions()
+		
+		if empty(possible_actions)
+			end_turn()
+		
+		# Attacking enemy hero
+		minion_attacks = get_minion_attacks(possible_actions)
+		
+		if not_empty(minion_attacks):
+			for action in minion_attacks:
+				if minion_attacks_oponnent(action)
+					perform_action(action)
+				
+					if is_dead(enemy):
+						end_turn()
+			
+		# Checking field	
+		spell_plays = get_play_spells(possible_actions)
+		minion_puts = get_minion_puts(possible_actions)
+				
+		if not_empty(spell_plays) or not_empty(minion_puts):
+			if score_field(enemy) >= score_field(agent):
+				best_action = choose_best_action(spell_plays, minion_puts)
+				perform_action(best_action)
+			else:
+				end_turn()
+\end{minted}
